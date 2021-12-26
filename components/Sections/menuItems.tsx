@@ -17,14 +17,14 @@ function MenuItems() {
 
 	return (
 		<Menu
-			mode="inline"
 			defaultSelectedKeys={["dashboard"]}
 			defaultOpenKeys={["dashboard"]}
+			mode="inline"
 			style={{
 				height: "100%",
 				borderRight: 0,
-				display: "flex",
-				flexDirection: "column",
+				// display: "flex",
+				// flexDirection: "column",
 			}}
 		>
 			<Menu.Item key="dashboard" icon={<HomeOutlined />}>
@@ -34,7 +34,7 @@ function MenuItems() {
 				Timesheet
 			</Menu.Item>
 			<Menu.Item key="3" icon={<PicLeftOutlined />}>
-				Reports
+				<Link href="/reports">Reports</Link>
 			</Menu.Item>
 			<Menu.Item key="settings" icon={<SettingOutlined />}>
 				<Link href="/settings">Settings</Link>

@@ -3,15 +3,8 @@ import { NextPage } from "next";
 import React, { useEffect } from "react";
 import { signin } from "../../redux/auth/authActions";
 import { useDispatch, useSelector } from "react-redux";
-import { getFirebase } from "react-redux-firebase";
-// import firebase from "firebase/app";
 
-import {
-	getAuth,
-	createUserWithEmailAndPassword,
-	signInWithEmailAndPassword,
-} from "firebase/auth";
-import Router, { useRouter } from "next/router";
+import Router from "next/router";
 
 interface Login {
 	email: string;
@@ -32,12 +25,6 @@ const Login: NextPage = () => {
 
 	const loginSubmit = async (values: Login) => {
 		dispatch(signin(values));
-
-		// const firebase = getFirebase();
-
-		// const user = firebase
-		// 	.auth()
-		// 	.signInWithEmailAndPassword(values.email, values.password);
 	};
 
 	return (
@@ -51,7 +38,7 @@ const Login: NextPage = () => {
 							span: 8,
 						}}
 						wrapperCol={{
-							span: 16,
+							span: 10,
 						}}
 						initialValues={{
 							remember: true,

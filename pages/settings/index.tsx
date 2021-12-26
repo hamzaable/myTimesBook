@@ -1,95 +1,85 @@
 import React from "react";
-import {
-	Button,
-	Cascader,
-	DatePicker,
-	Form,
-	Input,
-	InputNumber,
-	Radio,
-	Select,
-	Switch,
-	TreeSelect,
-	Typography,
-} from "antd";
+import { Button, Form, Input, InputNumber, Select, Typography } from "antd";
 import { useSelector, useDispatch } from "react-redux";
-import MainLayout from "../../components/Layout/mainLayout";
+import { isLoaded } from "react-redux-firebase";
+import Loading from "../../components/Elements/loading";
+import { updateUserSettings } from "../../redux/settings/settingsActions";
 
 function Settings() {
-	const user = useSelector((state: any) => state.fb.auth);
+	const dispatch = useDispatch();
 
-	return (
+	const fbProfile = useSelector((state: any) => state.fb.profile);
+	const fbStatus = isLoaded(fbProfile);
+
+	const userData = useSelector((state: any) => state.settings.userData);
+
+	const handleFormSubmit = async (data: any) => {
+		console.log("handleFormSubmit ~ data", data);
+		dispatch(updateUserSettings(data));
+	};
+	return !fbStatus ? (
+		<Loading />
+	) : (
 		<>
 			<Typography.Title>Settings</Typography.Title>
-
-			<Typography.Title level={4}>User ID : {user.uid}</Typography.Title>
+			{/* <Typography.Title level={4}>User ID : {user.uid}</Typography.Title> */}
 			<Form
-				labelCol={{ span: 4 }}
-				wrapperCol={{ span: 14 }}
-				layout="horizontal"
-				initialValues={{}}
-				onValuesChange={(e) => {
-					{
-						console.log(e);
-					}
-				}}
-				// size={componentSize as SizeType}
+				onFinish={handleFormSubmit}
+				labelCol={{ md: 24, lg: 14 }}
+				wrapperCol={{ md: 24, lg: 14 }}
+				layout="vertical"
 			>
-				<Form.Item label="Form Size" name="size">
-					<Radio.Group>
-						<Radio.Button value="small">Small</Radio.Button>
-						<Radio.Button value="default">Default</Radio.Button>
-						<Radio.Button value="large">Large</Radio.Button>
-					</Radio.Group>
-				</Form.Item>
-				<Form.Item label="Input">
+				<Form.Item
+					label="Username"
+					name="username"
+					initialValue={userData.username}
+				>
 					<Input />
 				</Form.Item>
-				<Form.Item label="Select">
+
+				<Form.Item
+					label="First Name"
+					name="firstname"
+					initialValue={userData.firstName}
+				>
+					<Input />
+				</Form.Item>
+
+				<Form.Item
+					label="Last Name"
+					name="lastname"
+					initialValue={userData.lastName}
+				>
+					<Input />
+				</Form.Item>
+
+				<Form.Item
+					label="Default Language"
+					name="language"
+					initialValue={userData.language}
+				>
 					<Select>
-						<Select.Option value="demo">Demo</Select.Option>
+						<Select.Option value="english">English</Select.Option>
+						<Select.Option value="german">German</Select.Option>
 					</Select>
 				</Form.Item>
-				<Form.Item label="TreeSelect">
-					<TreeSelect
-						treeData={[
-							{
-								title: "Light",
-								value: "light",
-								children: [
-									{ title: "Bamboo", value: "bamboo" },
-								],
-							},
-						]}
-					/>
+
+				<Form.Item
+					label="Time Step Jumps"
+					name="timesteps"
+					initialValue={userData.timeSteps}
+				>
+					<InputNumber style={{ width: "100%" }} min={1} max={50} />
 				</Form.Item>
-				<Form.Item label="Cascader">
-					<Cascader
-						options={[
-							{
-								value: "zhejiang",
-								label: "Zhejiang",
-								children: [
-									{
-										value: "hangzhou",
-										label: "Hangzhou",
-									},
-								],
-							},
-						]}
-					/>
-				</Form.Item>
-				<Form.Item label="DatePicker">
-					<DatePicker />
-				</Form.Item>
-				<Form.Item label="InputNumber">
-					<InputNumber />
-				</Form.Item>
-				<Form.Item label="Switch" valuePropName="checked">
-					<Switch />
-				</Form.Item>
-				<Form.Item label="Button">
-					<Button>Button</Button>
+
+				<Form.Item>
+					<Button
+						type="primary"
+						style={{ width: "100%" }}
+						htmlType="submit"
+					>
+						Update
+					</Button>
 				</Form.Item>
 			</Form>
 		</>
