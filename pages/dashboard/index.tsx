@@ -33,7 +33,7 @@ function Dashboard(props: any) {
 							<Input />
 						</Form.Item>
 
-						<Form.Item label="Type Detail" name="typeDetail">
+						<Form.Item label="Project" name="typeDetail">
 							<Input />
 						</Form.Item>
 
