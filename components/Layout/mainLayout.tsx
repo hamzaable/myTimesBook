@@ -1,11 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Layout } from "antd";
 import styles from "./mainLayout.module.css";
-import MenuItems from "../Sections/MenuItems";
+import MenuItems from "../Sections/menuItems";
+import { TrophyOutlined } from "@ant-design/icons";
 
 const { Header, Content, Sider } = Layout;
 
 function MainLayout(props: any) {
+	const [collapsed, setCollapsed] = useState(false);
+	const updateDimensions = () => {
+		setCollapsed(window.innerWidth <= 800 && true);
+	};
+	useEffect(() => {
+		window.addEventListener("resize", updateDimensions);
+		return () => {
+			window.removeEventListener("resize", updateDimensions);
+		};
+	}, []);
 	return (
 		<>
 			<Layout>
@@ -18,8 +29,8 @@ function MainLayout(props: any) {
 				<Layout style={{ backgroundColor: "white" }}>
 					<Sider
 						width={240}
-						collapsedWidth={200}
 						className={styles.siteLayoutHeight}
+						collapsed={collapsed}
 					>
 						<MenuItems />
 					</Sider>
