@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Form, Input, InputNumber, Select, Typography } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { isLoaded } from "react-redux-firebase";
-import Loading from "../../components/Elements/loading";
+import Loading from "../../components/compounds/loading";
 import { updateUserSettings } from "../../redux/settings/settingsActions";
 
 function Settings() {
