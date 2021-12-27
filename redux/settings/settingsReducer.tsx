@@ -17,7 +17,7 @@ const initialState = {
 		timeSteps: 5,
 		username: "",
 	},
-	loading: false,
+	globalLoading: false,
 };
 
 const settingsSlice = createSlice({
@@ -31,10 +31,16 @@ const settingsSlice = createSlice({
 			// state.userData[action.fieldName] = action.fieldValue;
 		},
 		dataFetchStart(state, action: any) {
-			state.loading = true;
+			state.globalLoading = true;
 		},
 		dataFetchEnd(state, action: any) {
-			state.loading = false;
+			state.globalLoading = false;
+		},
+		globalLoadingStart(state) {
+			state.globalLoading = true;
+		},
+		globalLoadingFinish(state) {
+			state.globalLoading = false;
 		},
 	},
 });

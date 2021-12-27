@@ -1,6 +1,7 @@
 import { settingsActions } from "./settingsReducer";
 
-const { updateAllData } = settingsActions;
+const { updateAllData, globalLoadingStart, globalLoadingFinish } =
+	settingsActions;
 
 export const getUserSettings = (data: any) => {
 	return async (dispatch: any, getState: any, { getFirebase }: any) => {
@@ -53,5 +54,17 @@ export const updateUserSettings = (data: any) => {
 			});
 
 		// dispatch(updateAllData(fetchedData[0]));
+	};
+};
+
+export const loadingStart = () => {
+	return async (dispatch: any, getState: any, { getFirebase }: any) => {
+		dispatch(globalLoadingStart());
+	};
+};
+
+export const loadingFinish = () => {
+	return async (dispatch: any, getState: any, { getFirebase }: any) => {
+		dispatch(globalLoadingFinish());
 	};
 };

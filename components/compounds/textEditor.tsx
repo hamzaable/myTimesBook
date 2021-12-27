@@ -1,18 +1,20 @@
-import ReactQuill from "react-quill";
+// TextEditor.tsx
+import React from "react";
 import "react-quill/dist/quill.snow.css";
+import dynamic from "next/dynamic";
 
 const modules = {
 	toolbar: [
 		[{ header: [1, 2, false] }],
-		["bold", "italic", "underline", "strike", "blockquote"],
+		["bold", "italic", "underline"],
 		[
 			{ list: "ordered" },
 			{ list: "bullet" },
-			{ indent: "-1" },
-			{ indent: "+1" },
+			// { indent: "-1" },
+			// { indent: "+1" },
 		],
 		["link", "code"],
-		["clean"],
+		// ["clean"],
 	],
 };
 
@@ -41,6 +43,10 @@ type Props = {
 };
 
 const TextEditor: React.FC<Props> = ({ value, onChange, placeholder }) => {
+	const ReactQuill = dynamic(() => import("react-quill"), {
+		ssr: false,
+	});
+
 	return (
 		<>
 			<ReactQuill
@@ -48,7 +54,7 @@ const TextEditor: React.FC<Props> = ({ value, onChange, placeholder }) => {
 				value={value || ""}
 				modules={modules}
 				formats={formats}
-				onChange={onChange}
+				// onChange={onChange}
 				placeholder={placeholder}
 			/>
 		</>

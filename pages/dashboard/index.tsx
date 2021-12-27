@@ -15,7 +15,7 @@ import TimeLog from "../../components/compounds/timelog";
 
 function Dashboard(props: any) {
 	const user = useSelector((state: any) => state.fb.auth);
-
+	
 	return (
 		<div>
 			{/* <Navigation /> */}

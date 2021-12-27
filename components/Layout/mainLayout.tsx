@@ -13,6 +13,7 @@ function MainLayout(props: any) {
 	};
 	useEffect(() => {
 		window.addEventListener("resize", updateDimensions);
+		setCollapsed(window.innerWidth <= 800 && true);
 		return () => {
 			window.removeEventListener("resize", updateDimensions);
 		};
@@ -23,7 +24,7 @@ function MainLayout(props: any) {
 				<Header className={styles.header}>
 					<div className="logo" />
 					<div>
-						<h1>My times Book</h1>
+						<h1>Times Board</h1>
 					</div>
 				</Header>
 				<Layout style={{ backgroundColor: "white" }}>

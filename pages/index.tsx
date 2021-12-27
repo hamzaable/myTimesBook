@@ -22,10 +22,9 @@ const Home: NextPage = () => {
 					Welcome to Next gen time logger, currently named as
 					myTimesLogger!
 				</h1>
-
 				<div style={{ padding: 100 }}>
 					<Space direction="horizontal">
-						<Link href="/login">
+						<Link href="/login" passHref>
 							<Button type="primary">Login</Button>
 						</Link>
 						<Button type="primary">Register</Button>
