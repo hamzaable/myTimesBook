@@ -1,24 +1,16 @@
-import Loader from "react-loader-spinner";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 
-function Loading() {
+function Loading(props: any) {
+	const sizeStyle = {
+		fontSize: props.size || 50,
+	};
+
+	const antIcon = <LoadingOutlined style={sizeStyle} spin />;
 	return (
-		<div
-			style={{
-				position: "absolute",
-				top: "50%",
-				left: "50%",
-				transform: "translate(-50%,-50%)",
-			}}
-            id="customLoader"
-		>
-			<Loader
-				type="Grid"
-				color="#1890ff"
-				secondaryColor="Grey"
-				height={40}
-				width={40}
-			/>
-		</div>
+		<>
+			<Spin indicator={antIcon} />
+		</>
 	);
 }
 

@@ -1,7 +1,8 @@
 // TextEditor.tsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
+// import ReactQuill from "react-quill";
 
 const modules = {
 	toolbar: [

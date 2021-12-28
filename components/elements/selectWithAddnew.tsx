@@ -1,6 +1,7 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { Select, Divider, Input } from "antd";
+import { Select, Divider, Input, Spin } from "antd";
 import React from "react";
+import Loading from "../compounds/loading";
 
 function SelectWithAddnew(props: any) {
 	return (
@@ -40,6 +41,9 @@ function SelectWithAddnew(props: any) {
 				onChange={props.onChange}
 				value={props.value}
 				onClick={props.onClick}
+				notFoundContent={
+					props.fetching ? <Loading size="12" /> : "No Data"
+				}
 			>
 				{props.optionsArray.map((data: any) => {
 					return (
