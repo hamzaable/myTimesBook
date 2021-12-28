@@ -19,6 +19,7 @@ import {
 	loadingStart,
 } from "../../redux/settings/settingsActions";
 import Loading from "./loading";
+import SelectWithAddnew from "../elements/selectWithAddnew";
 
 function TimeLog() {
 	const fb = getFirebase();
@@ -29,21 +30,38 @@ function TimeLog() {
 
 	const dispatch = useDispatch();
 
-	const [taskTypes, setTaskTypes] = useState<string[]>([]);
+	const [taskTypeOptions, setTaskTypeOptions] = useState<string[]>([]);
 	const [newTaskType, setNewTaskType] = useState<string>("");
+	const [selectedTaskType, setSelectedTaskType] = useState<string>("");
 
-	useEffect(() => {
-		getLogTypes();
-	}, []);
+	const [taskTypeDetailOptions, setTaskTypeDetailOptions] = useState<
+		string[]
+	>([]);
+	const [newTaskTypeDetail, setNewTaskTypeDetail] = useState<string>("");
+	const [selectedTaskTypeDetail, setSelectedTaskTypeDetail] =
+		useState<string>();
 
+	// useEffect(() => {
+	// 	getLogTypes();
+	// }, []);
+
+	function titleCase(str: string) {
+		return str
+			.split(" ")
+			.map(
+				(item) =>
+					item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()
+			)
+			.join(" ");
+	}
 	const getLogTypes = async () => {
-		dispatch(loadingStart());
+		// dispatch(loadingStart());
 		const collectionRef = fb
 			.firestore()
 			.collection(`users`)
 			.doc(user.uid)
 			.collection("types");
-		// let documentRef = collectionRef.where("UID", "==", state.fb.auth.uid);
+		// const documentRef = collectionRef.where("UID", "==", state.fb.auth.uid);
 		const documentRef = collectionRef;
 		const results: string[] = [];
 		await documentRef
@@ -60,9 +78,49 @@ function TimeLog() {
 			});
 
 		const uniqueResults: string[] = [...new Set(results)];
-		dispatch(loadingFinish());
+		// dispatch(loadingFinish());
 		if (uniqueResults.length !== 0) {
-			setTaskTypes(uniqueResults);
+			setTaskTypeOptions(uniqueResults);
+		} else {
+			setTaskTypeOptions([]);
+		}
+		return;
+	};
+
+	useEffect(() => {
+		if (selectedTaskType && selectedTaskType !== "") {
+			getLogTypeDetails(selectedTaskType);
+		}
+	}, [selectedTaskType]);
+
+	const getLogTypeDetails = async (type: string) => {
+		// dispatch(loadingStart());
+		const collectionRef = fb
+			.firestore()
+			.collection(`users`)
+			.doc(user.uid)
+			.collection("typeDetails");
+		const documentRef = collectionRef.where("type", "==", type);
+		const results: string[] = [];
+		await documentRef
+			.get()
+			.then((querySnapshot) => {
+				querySnapshot.forEach((doc) => {
+					if (doc.exists) {
+						results.push(doc.data()["typeData"]);
+					}
+				});
+			})
+			.catch((error) => {
+				console.log("Error getting documents: ", error);
+			});
+
+		const uniqueResults: string[] = [...new Set(results)];
+		// dispatch(loadingFinish());
+		if (uniqueResults.length !== 0) {
+			setTaskTypeDetailOptions(uniqueResults);
+		} else {
+			setTaskTypeDetailOptions([]);
 		}
 		return;
 	};
@@ -86,7 +144,7 @@ function TimeLog() {
 				{ merge: true }
 			)
 			.then(() => {
-				setTaskTypes((prev) => {
+				setTaskTypeOptions((prev) => {
 					return [...prev, newTaskType];
 				});
 				setNewTaskType("");
@@ -100,6 +158,8 @@ function TimeLog() {
 		console.log("handleFormSubmit ~ data", data);
 	};
 
+	const addNewTaskTypeDetail = () => {};
+
 	return globalLoading ? (
 		<Loading />
 	) : (
@@ -111,65 +171,53 @@ function TimeLog() {
 				layout="vertical"
 			>
 				<Col md={24} lg={14}>
-					<Typography.Title
-						level={4}
-						style={{ textAlign: "center", color: "grey" }}
-					>
-						New Time Log
-					</Typography.Title>
+					<Row gutter={6}>
+						<Col xs={24} sm={24} md={24} lg={10}>
+							<Form.Item label="Log Type" name="logType">
+								<SelectWithAddnew
+									newvalue={newTaskType}
+									newOnChange={(e: any) => {
+										setNewTaskType(e.target.value);
+									}}
+									onAddNew={addNewTaskType}
+									optionsArray={taskTypeOptions}
+									onChange={(e: any) => {
+										setSelectedTaskType(e);
+									}}
+									value={selectedTaskType}
+									onClick={() => {
+										getLogTypes();
+									}}
+								/>
+							</Form.Item>
+						</Col>
 
-					<Form.Item label="Log Type" name="logType">
-						<Select
-							dropdownRender={(menu) => (
-								<div>
-									{menu}
-									<Divider style={{ margin: "4px 0" }} />
-									<div
-										style={{
-											display: "flex",
-											flexWrap: "nowrap",
-											padding: 8,
-										}}
-									>
-										<Input
-											style={{ flex: "auto" }}
-											value={newTaskType}
-											onChange={(e) => {
-												setNewTaskType(e.target.value);
-											}}
-										/>
-										<a
-											style={{
-												flex: "none",
-												padding: "8px",
-												display: "block",
-												cursor: "pointer",
-											}}
-											onClick={addNewTaskType}
-										>
-											<PlusOutlined /> Add New
-										</a>
-									</div>
-								</div>
-							)}
-						>
-							{taskTypes.map((taskType) => {
-								return (
-									<Select.Option
-										key={taskType}
-										value={taskType}
-									>
-										{taskType}
-									</Select.Option>
-								);
-							})}
-							<Select.Option value="uid">Any</Select.Option>
-						</Select>
-					</Form.Item>
-
-					<Form.Item label="Title" name="typeDetail">
-						<Input />
-					</Form.Item>
+						<Col xs={24} sm={24} md={24} lg={14}>
+							<Form.Item
+								label={
+									selectedTaskType
+										? `${titleCase(
+												selectedTaskType
+										  )} Detail`
+										: "Details"
+								}
+								name="typeName"
+							>
+								<SelectWithAddnew
+									newvalue={newTaskTypeDetail}
+									newOnChange={(e: any) => {
+										setNewTaskTypeDetail(e.target.value);
+									}}
+									onAddNew={addNewTaskTypeDetail}
+									optionsArray={taskTypeDetailOptions}
+									onChange={(e: any) => {
+										setSelectedTaskTypeDetail(e);
+									}}
+									value={selectedTaskTypeDetail}
+								/>
+							</Form.Item>
+						</Col>
+					</Row>
 
 					<Form.Item name="description">
 						<TextEditor placeholder="Description" />
@@ -197,8 +245,8 @@ function TimeLog() {
 						<Button
 							type="primary"
 							style={{ width: "100%" }}
-							// htmlType="submit"
-							onClick={getLogTypes}
+							htmlType="submit"
+							// onClick={getLogTypes}
 						>
 							Add Time Log
 						</Button>
