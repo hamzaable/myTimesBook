@@ -409,7 +409,7 @@ function TimeLog() {
 						htmlType="submit"
 						// onClick={testingFunction}
 					>
-						Add Time Log
+						Add New Time Log
 					</Button>
 				</Form.Item>
 			</Form>
