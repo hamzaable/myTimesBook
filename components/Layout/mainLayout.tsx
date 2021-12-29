@@ -50,7 +50,9 @@ function MainLayout(props: any) {
 								minHeight: 280,
 							}}
 						>
+                            <div className={styles.pagewidth}>
 							{props.children}
+                            </div>
 						</Content>
 					</Layout>
 				</Layout>

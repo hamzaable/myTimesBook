@@ -42,12 +42,11 @@ type Props = {
 	placeholder?: string;
 	onChange?: OnChangeHandler;
 };
+const ReactQuill = dynamic(() => import("react-quill"), {
+	ssr: false,
+});
 
 const TextEditor: React.FC<Props> = ({ value, onChange, placeholder }) => {
-	const ReactQuill = dynamic(() => import("react-quill"), {
-		ssr: false,
-	});
-
 	return (
 		<>
 			<ReactQuill
