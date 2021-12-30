@@ -24,6 +24,7 @@ import {
 import Loading from "./loading";
 import SelectWithAddnew from "../elements/selectWithAddnew";
 import moment from "moment";
+import { MaskedInput } from "antd-mask-input";
 
 function TimeLog() {
 	const fb = getFirebase();
@@ -51,9 +52,108 @@ function TimeLog() {
 	const [selectedStartTime, setSelectedStartTime] = useState<any>();
 	const [selectedFinishTime, setSelectedFinishTime] = useState<any>();
 
+	const [selectedDuration, setSelectedDuration] = useState<any>();
+
 	// useEffect(() => {
 	// 	getLogTypes();
 	// }, []);
+
+	useEffect(() => {
+		if (selectedTaskType && selectedTaskType !== "") {
+			getLogTypeDetails(selectedTaskType);
+		}
+	}, [selectedTaskType]);
+
+	const splitNumber = (num: any) => {
+		num = ("" + num).match(/^(-?[0-9]+)([,.][0-9]+)?/) || [];
+		return [~~num[1], +(0 + (num[2] * 60).toFixed(0)) || 0];
+	};
+
+	const timeExpander = (value: any) => {
+		const splitter = value.split(":");
+		return { hours: parseInt(splitter[0]), minutes: parseInt(splitter[1]) };
+	};
+
+	const timeDifferencer = (
+		sh: number,
+		sm: number,
+		fh: number,
+		fm: number
+	) => {
+		const diff = splitNumber((fh * 60 + fm - (sh * 60 + sm)) / 60);
+		if (fh * 60 + fm - (sh * 60 + sm) < 0) {
+			return;
+		}
+		return `${("0" + diff[0]).slice(-2)}:${("0" + diff[1]).slice(-2)}`;
+	};
+
+	useEffect(() => {
+		// if finish time change with start time present
+		if (selectedStartTime && selectedFinishTime) {
+			const { hours: startHour, minutes: startMinute } =
+				timeExpander(selectedStartTime);
+
+			const { hours: finishHour, minutes: finishMinute } =
+				timeExpander(selectedFinishTime);
+			const calcDuration = timeDifferencer(
+				startHour,
+				startMinute,
+				finishHour,
+				finishMinute
+			);
+			setSelectedDuration(calcDuration);
+			form.setFieldsValue({
+				duration: calcDuration,
+			});
+
+			//  if finish time is null remove duration
+
+			if (
+				selectedFinishTime === "Invalid date" ||
+				selectedStartTime === "Invalid date"
+			) {
+				setSelectedDuration(null);
+				form.setFieldsValue({
+					duration: null,
+				});
+			}
+
+			// Remove finnish date if start date remove
+			// if (
+			// 	selectedStartTime === "Invalid date"
+			// ) {
+			// 	setSelectedFinishTime(null);
+			// 	form.setFieldsValue({
+			// 		timeFinish: null,
+			// 	});
+			// }
+		}
+	}, [selectedStartTime, selectedFinishTime]);
+
+	useEffect(() => {
+		if (selectedStartTime) {
+			if (selectedStartTime.length <= 5) {
+				const { hours: durationHour, minutes: durationhMinute } =
+					timeExpander(selectedDuration);
+				const { hours: startHour, minutes: startMinute } =
+					timeExpander(selectedStartTime);
+				const totalHours =
+					(durationHour * 60 +
+						durationhMinute +
+						(startHour * 60 + startMinute)) /
+					60;
+				const finishHours = splitNumber(totalHours);
+				const finishTime = `${("0" + finishHours[0]).slice(-2)}:${(
+					"0" + finishHours[1]
+				).slice(-2)}`;
+				setSelectedFinishTime(finishTime);
+				form.setFieldsValue({
+					timeFinish: moment(finishTime, "hh:mm"),
+				});
+				console.log("useEffect ~ finishHours", finishTime);
+			}
+		}
+	}, [selectedDuration]);
 
 	function titleCase(str: string) {
 		return str
@@ -98,12 +198,6 @@ function TimeLog() {
 		}
 		return;
 	};
-
-	useEffect(() => {
-		if (selectedTaskType && selectedTaskType !== "") {
-			getLogTypeDetails(selectedTaskType);
-		}
-	}, [selectedTaskType]);
 
 	const getLogTypeDetails = async (type: string) => {
 		// dispatch(loadingStart());
@@ -319,7 +413,7 @@ function TimeLog() {
 										<Select.Option value="uid">
 											None
 										</Select.Option>
-										<Select.Option value="hamza">
+										<Select.Option value="12121515">
 											Hamza
 										</Select.Option>
 									</Select>
@@ -362,6 +456,11 @@ function TimeLog() {
 												timeStart: value,
 											});
 										}}
+										onChange={(value) => {
+											const timeString =
+												moment(value).format("HH:mm");
+											setSelectedStartTime(timeString);
+										}}
 									/>
 								</Form.Item>
 							</Col>
@@ -386,18 +485,24 @@ function TimeLog() {
 												timeFinish: value,
 											});
 										}}
+										onChange={(value) => {
+											const timeString =
+												moment(value).format("HH:mm");
+											setSelectedFinishTime(timeString);
+										}}
 									/>
 								</Form.Item>
 							</Col>
 						</Row>
 						<Divider style={{ marginTop: "0px" }} />
 						<Form.Item label="Duration" name="duration">
-							<TimePicker
-								placeholder="Finish Time"
-								minuteStep={5}
-								// defaultValue={moment("12:08", "HH:mm")}
-								format={"HH:mm"}
-								style={{ minWidth: "100%" }}
+							<MaskedInput
+								mask="11:11"
+								placeholder="hh:mm"
+								value={selectedDuration}
+								onBlur={(e: any) => {
+									setSelectedDuration(e.target.value);
+								}}
 							/>
 						</Form.Item>
 					</Col>
@@ -409,7 +514,7 @@ function TimeLog() {
 						htmlType="submit"
 						// onClick={testingFunction}
 					>
-                    Add New Time Log
+						Add New Time Log
 					</Button>
 				</Form.Item>
 			</Form>

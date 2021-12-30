@@ -15,6 +15,7 @@ const Home: NextPage = () => {
 					content="a better app to log time for different activities"
 				/>
 				<link rel="icon" href="#" />
+				
 			</Head>
 
 			<main className={styles.main}>

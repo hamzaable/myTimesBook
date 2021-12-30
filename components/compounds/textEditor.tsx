@@ -42,6 +42,7 @@ type Props = {
 	placeholder?: string;
 	onChange?: OnChangeHandler;
 };
+
 const ReactQuill = dynamic(() => import("react-quill"), {
 	ssr: false,
 });
