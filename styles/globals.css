@@ -30,6 +30,7 @@ a {
 	overflow: hidden;
 	overflow-y: auto;
 	overflow-x: auto;
+    background: white;
 }
 
 .ant-form-item-label > label {
@@ -43,4 +44,8 @@ a {
 .ant-select,
 .ant-picker-input > input {
 	font-size: 1rem !important;
+}
+.ql-editor{
+    font-family: 'Rubik', sans-serif!important;
+    font-size: 15px;
 }

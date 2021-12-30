@@ -70,8 +70,19 @@ function TimeLog() {
 	};
 
 	const timeExpander = (value: any) => {
-		const splitter = value.split(":");
-		return { hours: parseInt(splitter[0]), minutes: parseInt(splitter[1]) };
+		if (value) {
+			if (value.length <= 5) {
+				const splitter = value.split(":");
+				return {
+					hours: parseInt(splitter[0]),
+					minutes: parseInt(splitter[1]),
+				};
+			}
+		}
+		return {
+			hours: 0,
+			minutes: 0,
+		};
 	};
 
 	const timeDifferencer = (
@@ -95,6 +106,7 @@ function TimeLog() {
 
 			const { hours: finishHour, minutes: finishMinute } =
 				timeExpander(selectedFinishTime);
+
 			const calcDuration = timeDifferencer(
 				startHour,
 				startMinute,
@@ -313,13 +325,19 @@ function TimeLog() {
 	};
 
 	const handleFormSubmit = (data: any) => {
-		console.log("handleFormSubmit ~ data", data);
+		console.log("handleFormSubmit ~ data", data.timeStart.toDate());
 	};
 
 	return globalLoading ? (
 		<Loading />
 	) : (
-		<Card style={{ borderRadius: "10px" }}>
+		<Card
+			style={{
+				borderRadius: "10px",
+				backgroundColor: "#f9fafb",
+				boxShadow: "0 0 20px rgba(0,0,0,.1)",
+			}}
+		>
 			<Form
 				onFinish={handleFormSubmit}
 				labelCol={{ md: 24, lg: 24 }}

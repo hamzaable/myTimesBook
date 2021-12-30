@@ -26,7 +26,6 @@ function MainLayout(props: any) {
 					<div>
 						<h1>Times Board</h1>
 					</div>
-					
 				</Header>
 				<Layout style={{ backgroundColor: "white" }}>
 					<Sider
@@ -41,6 +40,7 @@ function MainLayout(props: any) {
 							padding: "0 24px 24px",
 							borderTopLeftRadius: "10px",
 							borderBottomLeftRadius: "10px",
+                            backgroundColor: "#f2f6f8",
 						}}
 					>
 						<Content
@@ -49,6 +49,7 @@ function MainLayout(props: any) {
 								padding: 24,
 								margin: 0,
 								minHeight: 280,
+								backgroundColor: "#f2f6f8",
 							}}
 						>
 							<div className={styles.pagewidth}>
