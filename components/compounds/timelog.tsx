@@ -54,6 +54,11 @@ function TimeLog() {
 
 	const [selectedDuration, setSelectedDuration] = useState<any>();
 
+	const [selectedReportTo, setSelectedReportTo] = useState<any>();
+	const [ReportToOptions, setReportToOptions] = useState<
+		{ label: string; value: string }[]
+	>([{ label: "", value: "" }]);
+
 	// useEffect(() => {
 	// 	getLogTypes();
 	// }, []);
@@ -162,7 +167,6 @@ function TimeLog() {
 				form.setFieldsValue({
 					timeFinish: moment(finishTime, "hh:mm"),
 				});
-				console.log("useEffect ~ finishHours", finishTime);
 			}
 		}
 	}, [selectedDuration]);
@@ -319,6 +323,61 @@ function TimeLog() {
 				console.log("Document not successfully written!");
 			});
 	};
+	const reportToOnclick = async (e: any) => {
+		// dispatch(loadingStart());
+		setIsFetching(true);
+
+		const collectionRef = fb.firestore().collection(`userEmployees`);
+		// const documentRef = collectionRef.where("UID", "==", state.fb.auth.uid);
+		const documentRef = collectionRef;
+		const results: { label: string; value: string }[] = [];
+		await documentRef
+			.get()
+			.then((querySnapshot) => {
+				querySnapshot.forEach((doc) => {
+					if (doc.exists) {
+						if (doc.data()["UID"] === user.uid) {
+							results.push({
+								value: doc.data()["PID"],
+								label: doc.data()["pidName"],
+							});
+						}
+					}
+				});
+			})
+			.catch((error) => {
+				console.log("Error getting documents: ", error);
+			});
+
+		const uniqueResults: { label: string; value: string }[] = [
+			...new Set(results),
+		];
+		dispatch(loadingFinish());
+		if (uniqueResults.length !== 0) {
+			setReportToOptions(uniqueResults);
+		} else {
+			setReportToOptions([{ label: "", value: "" }]);
+		}
+		return;
+	};
+
+	const getParents = async () => {
+		const query = fb.firestore().collection(`userEmployees`).doc();
+		await query
+			.get()
+			.then((data: any) => {
+				if (data.docs.length > 0) {
+					for (let i = 0; i < data.docs.length; i++) {
+						const doc = data.docs[i];
+					}
+				} else {
+					// stop cursor if there is not more docs
+				}
+			})
+			.catch(() => {
+				console.log("Document not successfully getting!");
+			});
+	};
 
 	const testingFunction = () => {
 		form.setFieldsValue({ typeDetail: null });
@@ -427,13 +486,30 @@ function TimeLog() {
 								</Form.Item>
 
 								<Form.Item label="Report to" name="reportTo">
-									<Select>
-										<Select.Option value="uid">
-											None
-										</Select.Option>
-										<Select.Option value="12121515">
-											Hamza
-										</Select.Option>
+									<Select
+										value={selectedReportTo}
+										onClick={reportToOnclick}
+										notFoundContent={
+											isFetching ? (
+												<Loading size="12" />
+											) : (
+												"No Data"
+											)
+										}
+										onChange={(e: any) => {
+											setSelectedReportTo(e);
+										}}
+									>
+										{ReportToOptions.map((data: any) => {
+											return (
+												<Select.Option
+													key={data.value}
+													value={data.value}
+												>
+													{data.label}
+												</Select.Option>
+											);
+										})}
 									</Select>
 								</Form.Item>
 							</Col>
@@ -443,9 +519,7 @@ function TimeLog() {
 						<Form.Item label="Date & Time" name="date">
 							<DatePicker
 								placeholder="Select Date"
-								onChange={(e: any) => {
-									console.log(e);
-								}}
+								onChange={(e: any) => {}}
 								showToday={true}
 								format="DD.MM.YYYY"
 								showTime={false}
