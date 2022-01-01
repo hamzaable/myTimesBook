@@ -55,7 +55,7 @@ const TextEditor: React.FC<Props> = ({ value, onChange, placeholder }) => {
 				value={value || ""}
 				modules={modules}
 				formats={formats}
-				// onChange={onChange}
+				onChange={onChange}
 				placeholder={placeholder}
 				style={{ minHeight: "80px" }}
 			/>

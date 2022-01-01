@@ -5,14 +5,12 @@ import {
 	Select,
 	Input,
 	Button,
-	Typography,
 	Row,
 	Divider,
-	Space,
 	DatePicker,
 	TimePicker,
 } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { getFirebase } from "react-redux-firebase";
 import TextEditor from "./textEditor";
 import { useSelector, useDispatch } from "react-redux";
@@ -55,19 +53,15 @@ function TimeLog() {
 	const [selectedDuration, setSelectedDuration] = useState<any>();
 
 	const [selectedReportTo, setSelectedReportTo] = useState<any>();
-	const [ReportToOptions, setReportToOptions] = useState<
+	const [reportToOptions, setReportToOptions] = useState<
 		{ label: string; value: string }[]
 	>([{ label: "", value: "" }]);
+
+	const [description, setDescription] = useState("");
 
 	// useEffect(() => {
 	// 	getLogTypes();
 	// }, []);
-
-	useEffect(() => {
-		if (selectedTaskType && selectedTaskType !== "") {
-			getLogTypeDetails(selectedTaskType);
-		}
-	}, [selectedTaskType]);
 
 	const splitNumber = (num: any) => {
 		num = ("" + num).match(/^(-?[0-9]+)([,.][0-9]+)?/) || [];
@@ -215,41 +209,50 @@ function TimeLog() {
 		return;
 	};
 
-	const getLogTypeDetails = async (type: string) => {
-		// dispatch(loadingStart());
-		const collectionRef = fb
-			.firestore()
-			.collection(`users`)
-			.doc(user.uid)
-			.collection("typeDetails");
-		const documentRef = collectionRef.where("type", "==", type);
-		const results: string[] = [];
-		await documentRef
-			.get()
-			.then((querySnapshot) => {
-				querySnapshot.forEach((doc) => {
-					if (doc.exists) {
-						results.push(doc.data()["typeData"]);
-					}
+	const getLogTypeDetails = useCallback(
+		async (type: string) => {
+			// dispatch(loadingStart());
+			const collectionRef = fb
+				.firestore()
+				.collection(`users`)
+				.doc(user.uid)
+				.collection("typeDetails");
+			const documentRef = collectionRef.where("type", "==", type);
+			const results: string[] = [];
+			await documentRef
+				.get()
+				.then((querySnapshot) => {
+					querySnapshot.forEach((doc) => {
+						if (doc.exists) {
+							results.push(doc.data()["typeData"]);
+						}
+					});
+				})
+				.catch((error) => {
+					console.log("Error getting documents: ", error);
 				});
-			})
-			.catch((error) => {
-				console.log("Error getting documents: ", error);
-			});
 
-		const uniqueResults: string[] = [...new Set(results)];
-		// dispatch(loadingFinish());
-		if (uniqueResults.length !== 0) {
-			setTaskTypeDetailOptions(uniqueResults);
-		} else {
-			setTaskTypeDetailOptions([]);
+			const uniqueResults: string[] = [...new Set(results)];
+			// dispatch(loadingFinish());
+			if (uniqueResults.length !== 0) {
+				setTaskTypeDetailOptions(uniqueResults);
+			} else {
+				setTaskTypeDetailOptions([]);
+			}
+			form.setFieldsValue({
+				typeDetail: null,
+			});
+			setIsFetching(false);
+			return;
+		},
+		[fb, form, user.uid]
+	);
+
+	useEffect(() => {
+		if (selectedTaskType && selectedTaskType !== "") {
+			getLogTypeDetails(selectedTaskType);
 		}
-		form.setFieldsValue({
-			typeDetail: null,
-		});
-		setIsFetching(false);
-		return;
-	};
+	}, [getLogTypeDetails, selectedTaskType]);
 
 	const addNewTaskType = async () => {
 		if (!newTaskType) {
@@ -325,6 +328,11 @@ function TimeLog() {
 	};
 	const reportToOnclick = async (e: any) => {
 		// dispatch(loadingStart());
+		getParents();
+	};
+
+	const getParents = async () => {
+		// dispatch(loadingStart());
 		setIsFetching(true);
 
 		const collectionRef = fb.firestore().collection(`userEmployees`);
@@ -361,30 +369,68 @@ function TimeLog() {
 		return;
 	};
 
-	const getParents = async () => {
-		const query = fb.firestore().collection(`userEmployees`).doc();
-		await query
-			.get()
-			.then((data: any) => {
-				if (data.docs.length > 0) {
-					for (let i = 0; i < data.docs.length; i++) {
-						const doc = data.docs[i];
-					}
-				} else {
-					// stop cursor if there is not more docs
-				}
-			})
-			.catch(() => {
-				console.log("Document not successfully getting!");
-			});
-	};
-
 	const testingFunction = () => {
 		form.setFieldsValue({ typeDetail: null });
 	};
 
+	const MomentToTimestamp = (data: any) => {
+		return fb.firestore.Timestamp.fromDate(new Date(moment(data).format()));
+	};
+
 	const handleFormSubmit = (data: any) => {
-		console.log("handleFormSubmit ~ data", data.timeStart.toDate());
+		const timeStartFormatted = MomentToTimestamp(data.timeStart);
+		const timeFinishFormatted = MomentToTimestamp(data.timeFinish);
+
+		const timeStartCalc = MomentToTimestamp(
+			moment(
+				data.date.format("DD/MM/YYYY") +
+					" " +
+					data.timeStart.format("hh:mm"),
+				"DD/MM/YYYY hh:mm"
+			)
+		);
+
+		const timeFinishCalc = MomentToTimestamp(
+			moment(
+				data.date.format("DD/MM/YYYY") +
+					" " +
+					data.timeFinish.format("hh:mm"),
+				"DD/MM/YYYY hh:mm"
+			)
+		);
+
+		const submitter = {
+			description: description,
+			duration: selectedDuration,
+			reportTo: selectedReportTo,
+			tags: data.tags,
+			timeStart: timeStartFormatted,
+			timeFinish: timeFinishFormatted,
+			timeStartCalc: timeStartCalc,
+			timeFinishCalc: timeFinishCalc,
+			type: selectedTaskType,
+			typeDetail: selectedTaskTypeDetail,
+		};
+		console.log("handleFormSubmit ~ submitter", submitter);
+
+		postNewTimeLog(submitter)
+	};
+
+	const postNewTimeLog = async (data: any) => {
+		const query = fb
+			.firestore()
+			.collection(`users`)
+			.doc(user.uid)
+			.collection("timeLogs")
+			.doc();
+		await query
+			.set(data)
+			.then(() => {
+				console.log("Document successfully written!");
+			})
+			.catch(() => {
+				console.log("Document not successfully written!");
+			});
 	};
 
 	return globalLoading ? (
@@ -469,9 +515,25 @@ function TimeLog() {
 									</Col>
 								</Row>
 
-								<Form.Item name="description">
-									<TextEditor placeholder="Description" />
-									{/* <Input.TextArea placeholder="Description" /> */}
+								<Form.Item
+									// label="Task Name"
+									name="description"
+								>
+									{/* <TextEditor
+										placeholder="Task Details"
+										onChange={(e) => {
+  											setDescription(e);
+										}}
+										value={description}
+									/> */}
+
+									<Input.TextArea
+										value={description}
+										onChange={(e) => {
+											setDescription(e.target.value);
+										}}
+										placeholder={"Task Description"}
+									/>
 								</Form.Item>
 
 								<Form.Item label="Tags" name="tags">
@@ -500,7 +562,7 @@ function TimeLog() {
 											setSelectedReportTo(e);
 										}}
 									>
-										{ReportToOptions.map((data: any) => {
+										{reportToOptions.map((data: any) => {
 											return (
 												<Select.Option
 													key={data.value}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Form, Input, InputNumber, Select, Typography } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { isLoaded } from "react-redux-firebase";
@@ -14,7 +14,6 @@ function Settings() {
 	const userData = useSelector((state: any) => state.settings.userData);
 
 	const handleFormSubmit = async (data: any) => {
-		console.log("handleFormSubmit ~ data", data);
 		dispatch(updateUserSettings(data));
 	};
 	return !fbStatus ? (
