@@ -18,6 +18,8 @@ const initialState = {
 		username: "",
 	},
 	globalLoading: false,
+	logTypesData: [],
+    logTypeDetailsData:[]
 };
 
 const settingsSlice = createSlice({
@@ -41,6 +43,12 @@ const settingsSlice = createSlice({
 		},
 		globalLoadingFinish(state) {
 			state.globalLoading = false;
+		},
+		updateLogTypes(state, action: any) {
+			state.logTypesData = action.payload;
+		},
+        updateLogTypeDetails(state, action: any) {
+			state.logTypeDetailsData = action.payload;
 		},
 	},
 });

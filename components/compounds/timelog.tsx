@@ -16,8 +16,11 @@ import TextEditor from "./textEditor";
 import { useSelector, useDispatch } from "react-redux";
 import { PlusOutlined } from "@ant-design/icons";
 import {
+	getLogTypeDetails,
+	getLogTypes,
 	loadingFinish,
 	loadingStart,
+	updateLogTypeDetailsList,
 } from "../../redux/settings/settingsActions";
 import Loading from "./loading";
 import SelectWithAddnew from "../elements/selectWithAddnew";
@@ -36,13 +39,9 @@ function TimeLog() {
 
 	const [isFetching, setIsFetching] = useState(false);
 
-	const [taskTypeOptions, setTaskTypeOptions] = useState<string[]>([]);
 	const [newTaskType, setNewTaskType] = useState<string>("");
 	const [selectedTaskType, setSelectedTaskType] = useState<string>("");
 
-	const [taskTypeDetailOptions, setTaskTypeDetailOptions] = useState<
-		string[]
-	>([]);
 	const [newTaskTypeDetail, setNewTaskTypeDetail] = useState<string>("");
 	const [selectedTaskTypeDetail, setSelectedTaskTypeDetail] =
 		useState<string>();
@@ -59,9 +58,13 @@ function TimeLog() {
 
 	const [description, setDescription] = useState("");
 
-	// useEffect(() => {
-	// 	getLogTypes();
-	// }, []);
+	const taskTypeOptions = useSelector(
+		(state: any) => state.settings.logTypesData
+	);
+
+	const taskTypeDetailOptions = useSelector(
+		(state: any) => state.settings.logTypeDetailsData
+	);
 
 	const splitNumber = (num: any) => {
 		num = ("" + num).match(/^(-?[0-9]+)([,.][0-9]+)?/) || [];
@@ -174,85 +177,19 @@ function TimeLog() {
 			)
 			.join(" ");
 	}
-	const getLogTypes = async () => {
-		// dispatch(loadingStart());
+	const logTypesClick = async () => {
 		setIsFetching(true);
-
-		const collectionRef = fb
-			.firestore()
-			.collection(`users`)
-			.doc(user.uid)
-			.collection("types");
-		// const documentRef = collectionRef.where("UID", "==", state.fb.auth.uid);
-		const documentRef = collectionRef;
-		const results: string[] = [];
-		await documentRef
-			.get()
-			.then((querySnapshot) => {
-				querySnapshot.forEach((doc) => {
-					if (doc.exists) {
-						results.push(doc.data()["typeName"]);
-					}
-				});
-			})
-			.catch((error) => {
-				console.log("Error getting documents: ", error);
-			});
-
-		const uniqueResults: string[] = [...new Set(results)];
-		// dispatch(loadingFinish());
-		if (uniqueResults.length !== 0) {
-			setTaskTypeOptions(uniqueResults);
-		} else {
-			setTaskTypeOptions([]);
-		}
-		return;
+		dispatch(getLogTypes());
+		setIsFetching(false);
 	};
-
-	const getLogTypeDetails = useCallback(
-		async (type: string) => {
-			// dispatch(loadingStart());
-			const collectionRef = fb
-				.firestore()
-				.collection(`users`)
-				.doc(user.uid)
-				.collection("typeDetails");
-			const documentRef = collectionRef.where("type", "==", type);
-			const results: string[] = [];
-			await documentRef
-				.get()
-				.then((querySnapshot) => {
-					querySnapshot.forEach((doc) => {
-						if (doc.exists) {
-							results.push(doc.data()["typeData"]);
-						}
-					});
-				})
-				.catch((error) => {
-					console.log("Error getting documents: ", error);
-				});
-
-			const uniqueResults: string[] = [...new Set(results)];
-			// dispatch(loadingFinish());
-			if (uniqueResults.length !== 0) {
-				setTaskTypeDetailOptions(uniqueResults);
-			} else {
-				setTaskTypeDetailOptions([]);
-			}
-			form.setFieldsValue({
-				typeDetail: null,
-			});
-			setIsFetching(false);
-			return;
-		},
-		[fb, form, user.uid]
-	);
 
 	useEffect(() => {
 		if (selectedTaskType && selectedTaskType !== "") {
-			getLogTypeDetails(selectedTaskType);
+			setIsFetching(true);
+			dispatch(getLogTypeDetails(selectedTaskType));
+			setIsFetching(false);
 		}
-	}, [getLogTypeDetails, selectedTaskType]);
+	}, [selectedTaskType]);
 
 	const addNewTaskType = async () => {
 		if (!newTaskType) {
@@ -293,6 +230,7 @@ function TimeLog() {
 			alert("Please Select Log Type !");
 			return;
 		}
+		setIsFetching(true);
 		const query = fb
 			.firestore()
 			.collection(`users`)
@@ -317,14 +255,14 @@ function TimeLog() {
 					typeDetail: newTaskTypeDetail,
 				});
 				setSelectedTaskTypeDetail(newTaskTypeDetail);
-				setTaskTypeDetailOptions((prev) => {
-					return [...prev, newTaskTypeDetail];
-				});
+				dispatch(updateLogTypeDetailsList(newTaskTypeDetail));
 				setNewTaskTypeDetail("");
 			})
 			.catch(() => {
 				console.log("Document not successfully written!");
 			});
+
+		setIsFetching(false);
 	};
 	const reportToOnclick = async (e: any) => {
 		// dispatch(loadingStart());
@@ -374,6 +312,7 @@ function TimeLog() {
 	};
 
 	const MomentToTimestamp = (data: any) => {
+		// @ts-ignore
 		return fb.firestore.Timestamp.fromDate(new Date(moment(data).format()));
 	};
 
@@ -413,7 +352,7 @@ function TimeLog() {
 		};
 		console.log("handleFormSubmit ~ submitter", submitter);
 
-		postNewTimeLog(submitter)
+		postNewTimeLog(submitter);
 	};
 
 	const postNewTimeLog = async (data: any) => {
@@ -475,7 +414,7 @@ function TimeLog() {
 												}}
 												value={selectedTaskType}
 												onClick={() => {
-													getLogTypes();
+													logTypesClick();
 												}}
 												fetching={isFetching}
 											/>

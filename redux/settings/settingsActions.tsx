@@ -1,7 +1,12 @@
 import { settingsActions } from "./settingsReducer";
 
-const { updateAllData, globalLoadingStart, globalLoadingFinish } =
-	settingsActions;
+const {
+	updateAllData,
+	globalLoadingStart,
+	globalLoadingFinish,
+	updateLogTypes,
+	updateLogTypeDetails,
+} = settingsActions;
 
 export const getUserSettings = (data: any) => {
 	return async (dispatch: any, getState: any, { getFirebase }: any) => {
@@ -66,5 +71,80 @@ export const loadingStart = () => {
 export const loadingFinish = () => {
 	return async (dispatch: any, getState: any, { getFirebase }: any) => {
 		dispatch(globalLoadingFinish());
+	};
+};
+
+export const getLogTypes = () => {
+	return async (dispatch: any, getState: any, { getFirebase }: any) => {
+		const fb = getFirebase();
+		const state = getState();
+		const documentRef = fb
+			.firestore()
+			.collection(`users`)
+			.doc(state.fb.auth.uid)
+			.collection("types");
+		const results: string[] = [];
+		await documentRef
+			.get()
+			.then((querySnapshot: any) => {
+				querySnapshot.forEach((doc: any) => {
+					if (doc.exists) {
+						results.push(doc.data()["typeName"]);
+					}
+				});
+			})
+			.catch((error: any) => {
+				console.log("Error getting documents: ", error);
+			});
+
+		const uniqueResults: string[] = [...new Set(results)];
+		if (uniqueResults.length !== 0) {
+			dispatch(updateLogTypes(uniqueResults));
+		} else {
+			dispatch(updateLogTypes([]));
+		}
+		return;
+	};
+};
+
+export const getLogTypeDetails = (type: string) => {
+	return async (dispatch: any, getState: any, { getFirebase }: any) => {
+		const fb = getFirebase();
+		const state = getState();
+		const collectionRef = fb
+			.firestore()
+			.collection(`users`)
+			.doc(state.fb.auth.uid)
+			.collection("typeDetails");
+		const documentRef = collectionRef.where("type", "==", type);
+		const results: string[] = [];
+		await documentRef
+			.get()
+			.then((querySnapshot: any) => {
+				querySnapshot.forEach((doc: any) => {
+					if (doc.exists) {
+						results.push(doc.data()["typeData"]);
+					}
+				});
+			})
+			.catch((error: any) => {
+				console.log("Error getting documents: ", error);
+			});
+
+		const uniqueResults: string[] = [...new Set(results)];
+		if (uniqueResults.length !== 0) {
+			dispatch(updateLogTypeDetails(uniqueResults));
+		} else {
+			dispatch(updateLogTypeDetails([]));
+		}
+		return;
+	};
+};
+
+export const updateLogTypeDetailsList = (typeName: string) => {
+	return async (dispatch: any, getState: any, { getFirebase }: any) => {
+		const state = getState();
+		const uniqueResults = [...state.settings.logTypeDetailsData, typeName];
+		dispatch(updateLogTypeDetails(uniqueResults));
 	};
 };

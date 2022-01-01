@@ -50,5 +50,15 @@ a {
 	font-size: 15px;
 }
 .ql-editor.ql-blank::before {
-	font-style: initial!important;
+	font-style: initial !important;
 }
+
+.ant-tabs-content-holder {
+	margin-left: 20px;
+	margin-right: 20px;
+}
+/* 
+    background-color: rgb(249, 250, 251);
+    box-shadow: rgb(0 0 0 / 10%) 0px 0px 20px; 
+    
+*/
