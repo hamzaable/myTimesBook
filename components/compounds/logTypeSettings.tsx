@@ -6,7 +6,7 @@ function LogTypeSettings(props: any) {
 	const formItemLayoutWithOutLabel = {
 		wrapperCol: {
 			xs: { span: 24, offset: 0 },
-			sm: { span: 15, offset: 2   },
+			sm: { span: 15, offset: 0 },
 		},
 	};
 
@@ -17,13 +17,13 @@ function LogTypeSettings(props: any) {
 		},
 		wrapperCol: {
 			xs: { span: 24, offset: 0 },
-			sm: { span: 15, offset: 2 },
+			sm: { span: 15, offset: 0 },
 		},
 	};
 
 	function getInputValue(id: string) {
 		const data = document.getElementById(id);
-		console.log(data.value);
+		// console.log(data?.value);
 	}
 
 	return (
@@ -45,8 +45,7 @@ function LogTypeSettings(props: any) {
 										? formItemLayout
 										: formItemLayoutWithOutLabel)}
 									label={index === 0 ? "" : ""}
-									key={field.key}
-									className="hamza"
+									key={field.fieldKey}
 									style={{ marginBottom: "7px" }}
 								>
 									<Form.Item
@@ -68,11 +67,14 @@ function LogTypeSettings(props: any) {
 											id={`Input${field.key}`}
 										/>
 									</Form.Item>
-                                    
+
 									<MinusCircleOutlined
 										className="dynamic-delete-button"
 										onClick={() => remove(field.name)}
-                                        style={{marginRight:"10px",marginLeft:"10px"}}
+										style={{
+											marginRight: "10px",
+											marginLeft: "10px",
+										}}
 									/>
 									<a
 										onClick={() => {

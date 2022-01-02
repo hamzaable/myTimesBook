@@ -373,6 +373,7 @@ function TimeLog() {
 				wrapperCol={{ md: 24, lg: 24 }}
 				layout="vertical"
 				form={form}
+                autoComplete="off"
 			>
 				<Row gutter={16}>
 					<Col xs={24} sm={24} md={24} lg={16}>
@@ -598,7 +599,7 @@ function TimeLog() {
 					<Button
 						type="primary"
 						style={{ width: "100%", maxWidth: "200px" }}
-						htmlType="Save"
+						htmlType="submit"
 						// onClick={testingFunction}
 					>
 						Add New Time Log

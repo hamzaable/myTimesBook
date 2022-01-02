@@ -21,6 +21,7 @@ import {
 	UserOutlined,
 } from "@ant-design/icons";
 import LogTypeSettings from "../../components/compounds/logTypeSettings";
+import TypeDetailsSettings from "../../components/compounds/typeDetailsSettings";
 
 function Settings() {
 	const dispatch = useDispatch();
@@ -140,7 +141,7 @@ function Settings() {
 					}
 					key="2"
 				>
-					Content of Tab Pane 4
+					Content of Tab Pane 2
 				</Tabs.TabPane>
 				<Tabs.TabPane
 					tab={
@@ -166,7 +167,11 @@ function Settings() {
 					}
 					key="4"
 				>
-					Content of Tab Pane 4
+					<TypeDetailsSettings
+						initialValues={{
+							logTypes: logTypes,
+						}}
+					/>
 				</Tabs.TabPane>
 			</Tabs>
 		</>
