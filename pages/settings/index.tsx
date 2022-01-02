@@ -11,14 +11,16 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { isLoaded } from "react-redux-firebase";
 import Loading from "../../components/compounds/loading";
-import { getLogTypes, updateUserSettings } from "../../redux/settings/settingsActions";
+import {
+	getLogTypes,
+	updateUserSettings,
+} from "../../redux/settings/settingsActions";
 import {
 	FileDoneOutlined,
-	MinusCircleOutlined,
-	PlusOutlined,
 	SettingOutlined,
 	UserOutlined,
 } from "@ant-design/icons";
+import LogTypeSettings from "../../components/compounds/logTypeSettings";
 
 function Settings() {
 	const dispatch = useDispatch();
@@ -27,31 +29,15 @@ function Settings() {
 	const fbStatus = isLoaded(fbProfile);
 
 	const userData = useSelector((state: any) => state.settings.userData);
+	const logTypes = useSelector((state: any) => state.settings.logTypesData);
 
 	const handleFormSubmit = async (data: any) => {
 		dispatch(updateUserSettings(data));
 	};
 
-	const formItemLayoutWithOutLabel = {
-		wrapperCol: {
-			xs: { span: 24, offset: 0 },
-			sm: { span: 20, offset: 4 },
-		},
-	};
-
-	const formItemLayout = {
-		labelCol: {
-			xs: { span: 24 },
-			sm: { span: 4 },
-		},
-		wrapperCol: {
-			xs: { span: 24 },
-			sm: { span: 20 },
-		},
-	};
-    useEffect(() => {
-        dispatch(getLogTypes())
-    }, [])
+	useEffect(() => {
+		dispatch(getLogTypes());
+	}, []);
 
 	return !fbStatus ? (
 		<Loading />
@@ -144,92 +130,6 @@ function Settings() {
 						</Form.Item>
 					</Form>
 				</Tabs.TabPane>
-				<Tabs.TabPane
-					tab={
-						<span>
-							<FileDoneOutlined />
-							Log Types
-						</span>
-					}
-					key="2"
-				>
-					<Form
-						name="logTypes"
-						{...formItemLayoutWithOutLabel}
-						onFinish={(e) => {
-							console.log("Received values of form:", e);
-						}}
-						initialValues={{
-							names: ["hamza", "rehman", "saleemi"],
-						}}
-					>
-						<Form.List name="names">
-							{(fields, { add, remove }, { errors }) => (
-								<>
-									{fields.map((field, index) => (
-										<Form.Item
-											{...(index === 0
-												? formItemLayout
-												: formItemLayoutWithOutLabel)}
-											label={
-												index === 0 ? "Log Type" : ""
-											}
-											required={false}
-											key={field.key}
-										>
-											<Form.Item
-												{...field}
-												validateTrigger={[
-													"onChange",
-													"onBlur",
-												]}
-												rules={[
-													{
-														required: true,
-														whitespace: true,
-														message:
-															"Please input Log Type or delete this field.",
-													},
-												]}
-												noStyle
-											>
-												<Input
-													placeholder="Log Type"
-													style={{ width: "60%" }}
-												/>
-											</Form.Item>
-											{fields.length >= 1 ? (
-												<MinusCircleOutlined
-													className="dynamic-delete-button"
-													onClick={() =>
-														remove(field.name)
-													}
-												/>
-											) : null}
-										</Form.Item>
-									))}
-									<Form.Item>
-										<Button
-											type="dashed"
-											onClick={() => add()}
-											style={{ width: "60%" }}
-											icon={<PlusOutlined />}
-										>
-											Add more
-										</Button>
-
-										<Form.ErrorList errors={errors} />
-									</Form.Item>
-								</>
-							)}
-						</Form.List>
-						<Form.Item>
-							<Button type="primary" htmlType="submit">
-								Submit
-							</Button>
-						</Form.Item>
-					</Form>
-				</Tabs.TabPane>
 
 				<Tabs.TabPane
 					tab={
@@ -238,9 +138,35 @@ function Settings() {
 							Linked Accounts
 						</span>
 					}
+					key="2"
+				>
+					Content of Tab Pane 4
+				</Tabs.TabPane>
+				<Tabs.TabPane
+					tab={
+						<span>
+							<FileDoneOutlined />
+							Log Types
+						</span>
+					}
 					key="3"
 				>
-					Content of Tab Pane 3
+					<LogTypeSettings
+						initialValues={{
+							logTypes: logTypes,
+						}}
+					/>
+				</Tabs.TabPane>
+				<Tabs.TabPane
+					tab={
+						<span>
+							<FileDoneOutlined />
+							Log Type Details
+						</span>
+					}
+					key="4"
+				>
+					Content of Tab Pane 4
 				</Tabs.TabPane>
 			</Tabs>
 		</>

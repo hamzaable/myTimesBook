@@ -12,14 +12,11 @@ import {
 } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { getFirebase } from "react-redux-firebase";
-import TextEditor from "./textEditor";
 import { useSelector, useDispatch } from "react-redux";
-import { PlusOutlined } from "@ant-design/icons";
 import {
 	getLogTypeDetails,
 	getLogTypes,
 	loadingFinish,
-	loadingStart,
 	updateLogTypeDetailsList,
 } from "../../redux/settings/settingsActions";
 import Loading from "./loading";
@@ -30,12 +27,19 @@ import { MaskedInput } from "antd-mask-input";
 function TimeLog() {
 	const fb = getFirebase();
 	const user = useSelector((state: any) => state.fb.auth);
+	const dispatch = useDispatch();
+	const [form] = Form.useForm();
+
 	const globalLoading = useSelector(
 		(state: any) => state.settings.globalLoading
 	);
+	const taskTypeOptions = useSelector(
+		(state: any) => state.settings.logTypesData
+	);
 
-	const dispatch = useDispatch();
-	const [form] = Form.useForm();
+	const taskTypeDetailOptions = useSelector(
+		(state: any) => state.settings.logTypeDetailsData
+	);
 
 	const [isFetching, setIsFetching] = useState(false);
 
@@ -48,7 +52,6 @@ function TimeLog() {
 
 	const [selectedStartTime, setSelectedStartTime] = useState<any>();
 	const [selectedFinishTime, setSelectedFinishTime] = useState<any>();
-
 	const [selectedDuration, setSelectedDuration] = useState<any>();
 
 	const [selectedReportTo, setSelectedReportTo] = useState<any>();
@@ -57,48 +60,6 @@ function TimeLog() {
 	>([{ label: "", value: "" }]);
 
 	const [description, setDescription] = useState("");
-
-	const taskTypeOptions = useSelector(
-		(state: any) => state.settings.logTypesData
-	);
-
-	const taskTypeDetailOptions = useSelector(
-		(state: any) => state.settings.logTypeDetailsData
-	);
-
-	const splitNumber = (num: any) => {
-		num = ("" + num).match(/^(-?[0-9]+)([,.][0-9]+)?/) || [];
-		return [~~num[1], +(0 + (num[2] * 60).toFixed(0)) || 0];
-	};
-
-	const timeExpander = (value: any) => {
-		if (value) {
-			if (value.length <= 5) {
-				const splitter = value.split(":");
-				return {
-					hours: parseInt(splitter[0]),
-					minutes: parseInt(splitter[1]),
-				};
-			}
-		}
-		return {
-			hours: 0,
-			minutes: 0,
-		};
-	};
-
-	const timeDifferencer = (
-		sh: number,
-		sm: number,
-		fh: number,
-		fm: number
-	) => {
-		const diff = splitNumber((fh * 60 + fm - (sh * 60 + sm)) / 60);
-		if (fh * 60 + fm - (sh * 60 + sm) < 0) {
-			return;
-		}
-		return `${("0" + diff[0]).slice(-2)}:${("0" + diff[1]).slice(-2)}`;
-	};
 
 	useEffect(() => {
 		// if finish time change with start time present
@@ -131,16 +92,6 @@ function TimeLog() {
 					duration: null,
 				});
 			}
-
-			// Remove finnish date if start date remove
-			// if (
-			// 	selectedStartTime === "Invalid date"
-			// ) {
-			// 	setSelectedFinishTime(null);
-			// 	form.setFieldsValue({
-			// 		timeFinish: null,
-			// 	});
-			// }
 		}
 	}, [selectedStartTime, selectedFinishTime]);
 
@@ -156,7 +107,7 @@ function TimeLog() {
 						durationhMinute +
 						(startHour * 60 + startMinute)) /
 					60;
-				const finishHours = splitNumber(totalHours);
+				const finishHours = makeTimeArray(totalHours);
 				const finishTime = `${("0" + finishHours[0]).slice(-2)}:${(
 					"0" + finishHours[1]
 				).slice(-2)}`;
@@ -168,21 +119,6 @@ function TimeLog() {
 		}
 	}, [selectedDuration]);
 
-	function titleCase(str: string) {
-		return str
-			.split(" ")
-			.map(
-				(item) =>
-					item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()
-			)
-			.join(" ");
-	}
-	const logTypesClick = async () => {
-		setIsFetching(true);
-		dispatch(getLogTypes());
-		setIsFetching(false);
-	};
-
 	useEffect(() => {
 		if (selectedTaskType && selectedTaskType !== "") {
 			setIsFetching(true);
@@ -190,6 +126,55 @@ function TimeLog() {
 			setIsFetching(false);
 		}
 	}, [selectedTaskType]);
+
+	const makeTimeArray = (num: any) => {
+		num = ("" + num).match(/^(-?[0-9]+)([,.][0-9]+)?/) || [];
+		return [~~num[1], +(0 + (num[2] * 60).toFixed(0)) || 0];
+	};
+
+	const timeExpander = (value: any) => {
+		if (value) {
+			if (value.length <= 5) {
+				const splitter = value.split(":");
+				return {
+					hours: parseInt(splitter[0]),
+					minutes: parseInt(splitter[1]),
+				};
+			}
+		}
+		return {
+			hours: 0,
+			minutes: 0,
+		};
+	};
+
+	const timeDifferencer = (
+		sh: number,
+		sm: number,
+		fh: number,
+		fm: number
+	) => {
+		const diff = makeTimeArray((fh * 60 + fm - (sh * 60 + sm)) / 60);
+		if (fh * 60 + fm - (sh * 60 + sm) < 0) {
+			return;
+		}
+		return `${("0" + diff[0]).slice(-2)}:${("0" + diff[1]).slice(-2)}`;
+	};
+
+	const titleCase = (str: string) => {
+		return str
+			.split(" ")
+			.map(
+				(item) =>
+					item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()
+			)
+			.join(" ");
+	};
+	const logTypesClick = async () => {
+		setIsFetching(true);
+		dispatch(getLogTypes());
+		setIsFetching(false);
+	};
 
 	const addNewTaskType = async () => {
 		if (!newTaskType) {
@@ -411,6 +396,12 @@ function TimeLog() {
 												optionsArray={taskTypeOptions}
 												onChange={(e: any) => {
 													setSelectedTaskType(e);
+													setSelectedTaskTypeDetail(
+														""
+													);
+													form.setFieldsValue({
+														typeDetail: null,
+													});
 												}}
 												value={selectedTaskType}
 												onClick={() => {
@@ -587,9 +578,12 @@ function TimeLog() {
 								</Form.Item>
 							</Col>
 						</Row>
-						<Divider style={{ marginTop: "0px" }} />
+						<Divider
+							style={{ marginTop: "0px", marginBottom: "20px" }}
+						/>
 						<Form.Item label="Duration" name="duration">
 							<MaskedInput
+								autoComplete="none"
 								mask="11:11"
 								placeholder="hh:mm"
 								value={selectedDuration}
@@ -604,7 +598,7 @@ function TimeLog() {
 					<Button
 						type="primary"
 						style={{ width: "100%", maxWidth: "200px" }}
-						htmlType="submit"
+						htmlType="Save"
 						// onClick={testingFunction}
 					>
 						Add New Time Log
