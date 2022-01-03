@@ -14,6 +14,8 @@ function TypeDetailsSettings(props: any) {
 		(state: any) => state.settings.logTypeDetailsData
 	);
 
+	const [newItems, setNewItems] = useState(0);
+
 	useEffect(() => {
 		if (logTypes) {
 			setSelectedTaskType(logTypes[0]);
@@ -46,8 +48,29 @@ function TypeDetailsSettings(props: any) {
 
 	const [form] = Form.useForm();
 
+	const filterObject = (obj: any, predicate: any) =>
+		Object.keys(obj)
+			.filter((key) => predicate(obj[key]))
+			.reduce((res: any, key) => ((res[key] = obj[key]), res), {});
+
 	const onFinish = (values: any) => {
 		console.log("Received values of form:", values);
+
+		const newTypes: any = [];
+		const oldToUpdate: any = [];
+
+		for (const key in values) {
+			if (key.slice(0, 3) === "new") {
+				newTypes.push(values[key]);
+			} else if (key.slice(0, 3) === "old") {
+				const toCompare = key.slice(4);
+				if (toCompare !== values[key]) {
+					oldToUpdate.push(values[key]);
+				}
+			}
+		}
+		console.log("newTypes ~ newTypes", newTypes);
+		console.log("onFinish ~ oldToUpdate", oldToUpdate);
 	};
 
 	const handleChange = (e: any) => {
@@ -58,6 +81,8 @@ function TypeDetailsSettings(props: any) {
 	const logTypesOptions = logTypes.map((val: any) => {
 		return { label: val, value: val };
 	});
+
+	const newItemsArray = Array(newItems).fill(0);
 
 	const typeDetailsList = [...logTypesDetails];
 	return (
@@ -77,7 +102,7 @@ function TypeDetailsSettings(props: any) {
 					return (
 						<Form.Item
 							key={item}
-							name={item}
+							name={`old_${item}`}
 							style={{ marginBottom: "7px" }}
 							initialValue={item}
 							shouldUpdate={true}
@@ -100,12 +125,42 @@ function TypeDetailsSettings(props: any) {
 						</Form.Item>
 					);
 				})}
+				{/* New Items */}
+				{newItemsArray.map((a, b) => {
+					const item = b;
+					return (
+						<Form.Item
+							key={item}
+							name={`new_${item}`}
+							style={{ marginBottom: "7px" }}
+							initialValue={item}
+							shouldUpdate={true}
+						>
+							<Row>
+								<Col xs={20} sm={22} md={12} lg={10}>
+									<Input />
+								</Col>
+								<Col>
+									<MinusCircleOutlined
+										className="dynamic-delete-button"
+										onClick={() => console.log(item)}
+										style={{
+											marginRight: "10px",
+											marginLeft: "10px",
+										}}
+									/>
+								</Col>
+							</Row>
+						</Form.Item>
+					);
+				})}
+
 				<Row>
 					<Col xs={24} sm={24} md={12} lg={10}>
 						<Form.Item style={{ width: "100%" }}>
 							<Button
 								type="dashed"
-								onClick={(e: any) => console.log(e)}
+								onClick={() => setNewItems(newItems + 1)}
 								style={{ width: "100%" }}
 								icon={<PlusOutlined />}
 							>
