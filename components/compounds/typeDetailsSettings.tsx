@@ -67,6 +67,7 @@ function TypeDetailsSettings(props: any) {
 				name="dynamic_form_nest_item"
 				onFinish={onFinish}
 				autoComplete="off"
+				initialValues={{ typeName: props.logType || logTypes[0] }}
 			>
 				<Form.Item name="typeName" label="Log Type">
 					<Select options={logTypesOptions} onChange={handleChange} />
@@ -74,10 +75,16 @@ function TypeDetailsSettings(props: any) {
 
 				{typeDetailsList.map((item: any, key: any) => {
 					return (
-						<Form.Item key={item} style={{ marginBottom: "7px" }}>
+						<Form.Item
+							key={item}
+							name={item}
+							style={{ marginBottom: "7px" }}
+							initialValue={item}
+							shouldUpdate={true}
+						>
 							<Row>
-								<Col xs={24} sm={24} md={12} lg={10}>
-									<Input defaultValue={item} />{" "}
+								<Col xs={20} sm={22} md={12} lg={10}>
+									<Input defaultValue={item} />
 								</Col>
 								<Col>
 									<MinusCircleOutlined
@@ -90,11 +97,28 @@ function TypeDetailsSettings(props: any) {
 									/>
 								</Col>
 							</Row>
-
-							
 						</Form.Item>
 					);
 				})}
+				<Row>
+					<Col xs={24} sm={24} md={12} lg={10}>
+						<Form.Item style={{ width: "100%" }}>
+							<Button
+								type="dashed"
+								onClick={(e: any) => console.log(e)}
+								style={{ width: "100%" }}
+								icon={<PlusOutlined />}
+							>
+								Add more
+							</Button>
+						</Form.Item>
+					</Col>
+				</Row>
+				<Form.Item>
+					<Button type="primary" htmlType="submit">
+						Save changes
+					</Button>
+				</Form.Item>
 			</Form>
 		</>
 	);
