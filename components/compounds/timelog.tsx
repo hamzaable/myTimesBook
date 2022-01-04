@@ -14,6 +14,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { getFirebase } from "react-redux-firebase";
 import { useSelector, useDispatch } from "react-redux";
 import {
+	addNewTaskType,
+	addNewTaskTypeDetail,
 	getLogTypeDetails,
 	getLogTypes,
 	loadingFinish,
@@ -176,76 +178,29 @@ function TimeLog() {
 		setIsFetching(false);
 	};
 
-	const addNewTaskType = async () => {
+	const addNewTaskTypeHandler = async () => {
 		if (!newTaskType) {
 			return;
 		}
-		const query = fb
-			.firestore()
-			.collection(`users`)
-			.doc(user.uid)
-			.collection("types")
-			.doc();
-		await query
-			.set(
-				{
-					typeName: titleCase(newTaskType),
-					addedBy: user.uid,
-					// @ts-ignore
-					dateAdded: fb.firestore.Timestamp.fromDate(
-						new Date()
-					).toDate(),
-				},
-				{ merge: true }
-			)
-			.then(() => {
-				setNewTaskType("");
-				form.setFieldsValue({
-					logType: newTaskType,
-				});
-				setSelectedTaskType(newTaskType);
-			})
-			.catch(() => {
-				console.log("Document not successfully written!");
-			});
+		dispatch(addNewTaskType(newTaskType));
+		setNewTaskType("");
+		form.setFieldsValue({
+			logType: newTaskType,
+		});
+		setSelectedTaskType(newTaskType);
 	};
 
-	const addNewTaskTypeDetail = async () => {
+	const addNewTaskTypeDetailHandler = async () => {
 		if (!selectedTaskType) {
 			alert("Please Select Log Type !");
 			return;
 		}
 		setIsFetching(true);
-		const query = fb
-			.firestore()
-			.collection(`users`)
-			.doc(user.uid)
-			.collection("typeDetails")
-			.doc();
-		await query
-			.set(
-				{
-					type: selectedTaskType,
-					typeData: newTaskTypeDetail,
-					addedBy: user.uid,
-					// @ts-ignore
-					dateAdded: fb.firestore.Timestamp.fromDate(
-						new Date()
-					).toDate(),
-				},
-				{ merge: true }
-			)
-			.then(() => {
-				form.setFieldsValue({
-					typeDetail: newTaskTypeDetail,
-				});
-				setSelectedTaskTypeDetail(newTaskTypeDetail);
-				dispatch(updateLogTypeDetailsList(newTaskTypeDetail));
-				setNewTaskTypeDetail("");
-			})
-			.catch(() => {
-				console.log("Document not successfully written!");
-			});
+
+		dispatch(addNewTaskTypeDetail(selectedTaskType, newTaskTypeDetail));
+
+		setSelectedTaskTypeDetail(newTaskTypeDetail);
+		setNewTaskTypeDetail("");
 
 		setIsFetching(false);
 	};
@@ -373,7 +328,7 @@ function TimeLog() {
 				wrapperCol={{ md: 24, lg: 24 }}
 				layout="vertical"
 				form={form}
-                autoComplete="off"
+				autoComplete="off"
 			>
 				<Row gutter={16}>
 					<Col xs={24} sm={24} md={24} lg={16}>
@@ -393,7 +348,7 @@ function TimeLog() {
 														e.target.value
 													);
 												}}
-												onAddNew={addNewTaskType}
+												onAddNew={addNewTaskTypeHandler}
 												optionsArray={taskTypeOptions}
 												onChange={(e: any) => {
 													setSelectedTaskType(e);
@@ -431,7 +386,9 @@ function TimeLog() {
 														e.target.value
 													);
 												}}
-												onAddNew={addNewTaskTypeDetail}
+												onAddNew={
+													addNewTaskTypeDetailHandler
+												}
 												optionsArray={
 													taskTypeDetailOptions
 												}

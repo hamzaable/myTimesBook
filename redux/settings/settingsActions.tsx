@@ -7,6 +7,8 @@ const {
 	updateLogTypes,
 	updateLogTypeDetails,
 	deleteLogTypeDetails,
+	addLogType,
+	addLogTypeDetail,
 } = settingsActions;
 
 export const getUserSettings = (data: any) => {
@@ -186,6 +188,69 @@ export const deleteLogTypeDetail = (type: string, typeData: string) => {
 					doc.ref.delete();
 					dispatch(deleteLogTypeDetails(typeData));
 				});
+			});
+	};
+};
+
+export const addNewTaskType = (type: string) => {
+	return async (dispatch: any, getState: any, { getFirebase }: any) => {
+		const fb = getFirebase();
+		const state = getState();
+		const documentRef = fb
+			.firestore()
+			.collection(`users`)
+			.doc(state.fb.auth.uid)
+			.collection("types")
+			.doc();
+		await documentRef
+			.set(
+				{
+					typeName: type,
+					addedBy: state.fb.auth.uid,
+					dateAdded: fb.firestore.Timestamp.fromDate(
+						new Date()
+					).toDate(),
+				},
+				{ merge: true }
+			)
+			.then(() => {
+				console.log("Document  successfully written!");
+				dispatch(addLogType(type));
+			})
+			.catch(() => {
+				console.log("Document not successfully written!");
+			});
+	};
+};
+
+export const addNewTaskTypeDetail = (type: string, typeDetail: string) => {
+	return async (dispatch: any, getState: any, { getFirebase }: any) => {
+		const fb = getFirebase();
+		const state = getState();
+		const documentRef = fb
+			.firestore()
+			.collection(`users`)
+			.doc(state.fb.auth.uid)
+			.collection("typeDetails")
+			.doc();
+		await documentRef
+			.set(
+				{
+					type: type,
+					typeData: typeDetail,
+					addedBy: state.fb.auth.uid,
+					dateAdded: fb.firestore.Timestamp.fromDate(
+						new Date()
+					).toDate(),
+				},
+				{ merge: true }
+			)
+			.then(() => {
+				console.log("Document  successfully written!");
+				dispatch(addLogTypeDetail(typeDetail));
+			})
+			.catch(() => {
+				console.log("Document not successfully written!");
 			});
 	};
 };

@@ -47,8 +47,16 @@ const settingsSlice = createSlice({
 		updateLogTypes(state, action: any) {
 			state.logTypesData = action.payload;
 		},
+		addLogType(state, action: any) {
+			state.logTypesData = state.logTypesData.concat(action.payload);
+		},
 		updateLogTypeDetails(state, action: any) {
 			state.logTypeDetailsData = action.payload;
+		},
+		addLogTypeDetail(state, action: any) {
+			state.logTypeDetailsData = state.logTypeDetailsData.concat(
+				action.payload
+			);
 		},
 		deleteLogTypeDetails(state, action: any) {
 			state.logTypeDetailsData = state.logTypeDetailsData.filter(

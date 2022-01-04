@@ -74,6 +74,14 @@ function TypeDetailsSettings(props: any) {
 		}
 		console.log("newTypes ~ newTypes", newTypes);
 		console.log("onFinish ~ oldToUpdate", oldToUpdate);
+
+		//  Add new changes first
+		if (newTypes.length > 0) {
+			newTypes.map((val: string) => {
+
+                
+            });
+		}
 	};
 
 	const handleChange = (e: any) => {
