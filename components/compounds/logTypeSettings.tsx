@@ -1,8 +1,12 @@
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
 import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { deleteLogType } from "../../redux/settings/settingsActions";
 
 function LogTypeSettings(props: any) {
+	const dispatch = useDispatch();
+
 	const formItemLayoutWithOutLabel = {
 		wrapperCol: {
 			xs: { span: 24, offset: 0 },
@@ -22,10 +26,17 @@ function LogTypeSettings(props: any) {
 	};
 
 	function getInputValue(id: string) {
-		const data = document.getElementById(id);
-		// console.log(data?.value);
+		const temp: HTMLInputElement = document.getElementById(
+			id
+		) as HTMLInputElement;
+		return temp.value;
 	}
 
+	const deleteInput = (data: string) => {
+		const toDel = getInputValue(data);
+		console.log("deleteInput ~ toDel", toDel);
+		dispatch(deleteLogType(toDel));
+	};
 	return (
 		<>
 			<Form
@@ -45,7 +56,7 @@ function LogTypeSettings(props: any) {
 										? formItemLayout
 										: formItemLayoutWithOutLabel)}
 									label={index === 0 ? "" : ""}
-									key={field.fieldKey}
+									key={index}
 									style={{ marginBottom: "7px" }}
 								>
 									<Form.Item
@@ -70,7 +81,11 @@ function LogTypeSettings(props: any) {
 
 									<MinusCircleOutlined
 										className="dynamic-delete-button"
-										onClick={() => remove(field.name)}
+										onClick={() => {
+											deleteInput(`Input${field.key}`);
+
+											// remove(field.name);
+										}}
 										style={{
 											marginRight: "10px",
 											marginLeft: "10px",

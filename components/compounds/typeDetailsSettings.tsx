@@ -1,12 +1,15 @@
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { Form, Input, Button, Select, Row, Col, Space } from "antd";
 import React, { useEffect, useState } from "react";
-import { getLogTypeDetails } from "../../redux/settings/settingsActions";
+import {
+	deleteLogTypeDetail,
+	getLogTypeDetails,
+} from "../../redux/settings/settingsActions";
 import SelectWithAddnew from "../elements/selectWithAddnew";
 import { useSelector, useDispatch } from "react-redux";
 
 function TypeDetailsSettings(props: any) {
-	const [selectedTaskType, setSelectedTaskType] = useState();
+	const [selectedTaskType, setSelectedTaskType] = useState<string>("");
 	const dispatch = useDispatch();
 
 	const logTypes = useSelector((state: any) => state.settings.logTypesData);
@@ -84,7 +87,9 @@ function TypeDetailsSettings(props: any) {
 
 	const newItemsArray = Array(newItems).fill(0);
 
-	const typeDetailsList = [...logTypesDetails];
+	const deleteOldInput = (item: any, delKey: any) => {
+		dispatch(deleteLogTypeDetail(selectedTaskType, item));
+	};
 	return (
 		<>
 			<Form
@@ -98,7 +103,7 @@ function TypeDetailsSettings(props: any) {
 					<Select options={logTypesOptions} onChange={handleChange} />
 				</Form.Item>
 
-				{typeDetailsList.map((item: any, key: any) => {
+				{logTypesDetails.map((item: any, key: any) => {
 					return (
 						<Form.Item
 							key={item}
@@ -114,7 +119,10 @@ function TypeDetailsSettings(props: any) {
 								<Col>
 									<MinusCircleOutlined
 										className="dynamic-delete-button"
-										onClick={() => console.log(item)}
+										onClick={() => {
+											console.log(key);
+											deleteOldInput(item, key);
+										}}
 										style={{
 											marginRight: "10px",
 											marginLeft: "10px",

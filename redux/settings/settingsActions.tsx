@@ -6,6 +6,7 @@ const {
 	globalLoadingFinish,
 	updateLogTypes,
 	updateLogTypeDetails,
+	deleteLogTypeDetails,
 } = settingsActions;
 
 export const getUserSettings = (data: any) => {
@@ -146,5 +147,45 @@ export const updateLogTypeDetailsList = (typeName: string) => {
 		const state = getState();
 		const uniqueResults = [...state.settings.logTypeDetailsData, typeName];
 		dispatch(updateLogTypeDetails(uniqueResults));
+	};
+};
+
+export const deleteLogType = (type: string) => {
+	return async (dispatch: any, getState: any, { getFirebase }: any) => {
+		const fb = getFirebase();
+		const state = getState();
+		const documentRef = fb
+			.firestore()
+			.collection(`users`)
+			.doc(state.fb.auth.uid)
+			.collection("types")
+			.where("typeName", "==", type)
+			.get()
+			.then((querySnapshot: any) => {
+				querySnapshot.forEach((doc: any) => {
+					doc.ref.delete();
+				});
+			});
+	};
+};
+
+export const deleteLogTypeDetail = (type: string, typeData: string) => {
+	return async (dispatch: any, getState: any, { getFirebase }: any) => {
+		const fb = getFirebase();
+		const state = getState();
+		const documentRef = fb
+			.firestore()
+			.collection(`users`)
+			.doc(state.fb.auth.uid)
+			.collection("typeDetails")
+			.where("type", "==", type)
+			.where("typeData", "==", typeData)
+			.get()
+			.then((querySnapshot: any) => {
+				querySnapshot.forEach((doc: any) => {
+					doc.ref.delete();
+					dispatch(deleteLogTypeDetails(typeData));
+				});
+			});
 	};
 };

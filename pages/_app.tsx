@@ -3,24 +3,24 @@ import "../styles/globals.css";
 import "antd/dist/antd.css";
 import React, { useEffect } from "react";
 
-import store, { rrfProps } from "../redux/store";
+import store, { RootState, rrfProps } from "../redux/store";
 import { Provider } from "react-redux";
 import { isLoaded, ReactReduxFirebaseProvider } from "react-redux-firebase";
 import ProtectedRoutes from "../components/ProtectedRoute";
 import { useSelector, useDispatch } from "react-redux";
 import { getUserSettings } from "../redux/settings/settingsActions";
-import Router, { useRouter } from "next/router";
+import Router from "next/router";
 import { unProtectedRoutes } from "../components/Constants/unProtectedRoutes";
 
-const AppWrapper = (props: any) => {
-	const isAuthenticated = useSelector((state: any) => state.fb.auth);
+const AppWrapper: React.FC = (props) => {
+	const isAuthenticated = useSelector((state: RootState) => state.fb.auth);
 	const user = isAuthenticated.uid;
 	const fbStatus = isLoaded(isAuthenticated);
 	const dispatch = useDispatch();
 	useEffect(() => {
 		if (fbStatus === true) {
 			if (user) {
-				dispatch(getUserSettings(user.uid));
+				dispatch(getUserSettings(user));
 				const pathIsProtected =
 					unProtectedRoutes.indexOf(Router.pathname) === -1;
 				if (!pathIsProtected) {

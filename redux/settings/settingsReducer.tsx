@@ -19,7 +19,7 @@ const initialState = {
 	},
 	globalLoading: false,
 	logTypesData: [],
-    logTypeDetailsData:[]
+	logTypeDetailsData: [],
 };
 
 const settingsSlice = createSlice({
@@ -47,8 +47,19 @@ const settingsSlice = createSlice({
 		updateLogTypes(state, action: any) {
 			state.logTypesData = action.payload;
 		},
-        updateLogTypeDetails(state, action: any) {
+		updateLogTypeDetails(state, action: any) {
 			state.logTypeDetailsData = action.payload;
+		},
+		deleteLogTypeDetails(state, action: any) {
+			state.logTypeDetailsData = state.logTypeDetailsData.filter(
+				(item: string) => {
+					if (item === action.payload) {
+						return false;
+					} else {
+						return true;
+					}
+				}
+			);
 		},
 	},
 });

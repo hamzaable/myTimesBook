@@ -2,12 +2,19 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { ReactReduxFirebaseProvider, isLoaded } from "react-redux-firebase";
 import MainLayout from "./Layout/mainLayout";
-import {unProtectedRoutes} from '../components/Constants/unProtectedRoutes'
+import { unProtectedRoutes } from "../components/Constants/unProtectedRoutes";
+import { AppProps } from "next/app";
+import { Router } from "next/router";
 
-const ProtectedRoute = ({ router, children }: any) => {
+const ProtectedRoute = ({
+	router,
+	children,
+}: {
+	router: Router;
+	children: JSX.Element;
+}) => {
 	const isAuthenticated = useSelector((state: any) => state.fb.auth);
 	const fbStatus = isLoaded(isAuthenticated);
-
 	const pathIsProtected = unProtectedRoutes.indexOf(router.pathname) === -1;
 	useEffect(() => {
 		if (!isAuthenticated.uid && pathIsProtected && fbStatus) {
