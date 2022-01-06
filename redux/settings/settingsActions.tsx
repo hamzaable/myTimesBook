@@ -1,3 +1,4 @@
+import { notification } from "antd";
 import { settingsActions } from "./settingsReducer";
 
 const {
@@ -223,7 +224,7 @@ export const addNewTaskType = (type: string) => {
 	};
 };
 
-export const addNewTaskTypeDetail = (type: string, typeDetail: string) => {
+export const addNewTaskTypeDetail = (type: string, typeDetail: string,showNotification:boolean) => {
 	return async (dispatch: any, getState: any, { getFirebase }: any) => {
 		const fb = getFirebase();
 		const state = getState();
@@ -248,6 +249,10 @@ export const addNewTaskTypeDetail = (type: string, typeDetail: string) => {
 			.then(() => {
 				console.log("Document  successfully written!");
 				dispatch(addLogTypeDetail(typeDetail));
+				notification["success"]({
+					message: "Records Saved",
+					description: "Data updated successfully",
+				});
 			})
 			.catch(() => {
 				console.log("Document not successfully written!");

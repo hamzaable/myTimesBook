@@ -1,23 +1,36 @@
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { Form, Input, Button, Select, Row, Col, Space } from "antd";
-import React, { useEffect, useState } from "react";
 import {
+	Form,
+	Input,
+	Button,
+	Select,
+	Row,
+	Col,
+	Space,
+	notification,
+} from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import {
+	addNewTaskTypeDetail,
 	deleteLogTypeDetail,
 	getLogTypeDetails,
 } from "../../redux/settings/settingsActions";
 import SelectWithAddnew from "../elements/selectWithAddnew";
 import { useSelector, useDispatch } from "react-redux";
+import NewTypeItem from "../elements/newTypeItem";
 
 function TypeDetailsSettings(props: any) {
 	const [selectedTaskType, setSelectedTaskType] = useState<string>("");
 	const dispatch = useDispatch();
+
+	const newItemInput = useRef("");
 
 	const logTypes = useSelector((state: any) => state.settings.logTypesData);
 	const logTypesDetails = useSelector(
 		(state: any) => state.settings.logTypeDetailsData
 	);
 
-	const [newItems, setNewItems] = useState(0);
+	const [newItems, setNewItems] = useState<number[]>([]);
 
 	useEffect(() => {
 		if (logTypes) {
@@ -31,25 +44,11 @@ function TypeDetailsSettings(props: any) {
 		}
 	}, [selectedTaskType]);
 
-	const formItemLayoutWithOutLabel = {
-		wrapperCol: {
-			xs: { span: 24, offset: 0 },
-			sm: { span: 15, offset: 2 },
-		},
-	};
-
-	const formItemLayout = {
-		labelCol: {
-			xs: { span: 24 },
-			sm: { span: 4 },
-		},
-		wrapperCol: {
-			xs: { span: 24, offset: 0 },
-			sm: { span: 15, offset: 2 },
-		},
-	};
-
 	const [form] = Form.useForm();
+
+	const arrMaker = (previous: number[] | []) => {
+		return (Math.max(...previous) + 1) | 0;
+	};
 
 	const filterObject = (obj: any, predicate: any) =>
 		Object.keys(obj)
@@ -77,10 +76,15 @@ function TypeDetailsSettings(props: any) {
 
 		//  Add new changes first
 		if (newTypes.length > 0) {
-			newTypes.map((val: string) => {
-
-                
-            });
+			newTypes.map((newTaskTypeDetail: string) => {
+				dispatch(
+					addNewTaskTypeDetail(
+						selectedTaskType,
+						newTaskTypeDetail,
+						true
+					)
+				);
+			});
 		}
 	};
 
@@ -89,11 +93,38 @@ function TypeDetailsSettings(props: any) {
 		// form.setFieldsValue({ sights: [] });
 	};
 
+	const newItemsdeleteHandler = (item: any) => {
+		setNewItems((prev) => {
+			const test = prev.filter((val) => {
+				console.log(val, item);
+				if (val != item) {
+					return true;
+				} else {
+					return false;
+				}
+			});
+			console.log("test ~ test", test);
+			return [...test];
+		});
+
+		// setNewItems((prev: any) => {
+		// 	const test = prev.filter((val: string, key: number) => {
+		// 		console.log(prev);
+		// 		return key != item;
+		// 	});
+		// 	console.log("test ~ test", test);
+		// 	return [...test];
+		// 	// return test;
+		// });
+		// newItemInput.current?.innerHTML = "";
+		// console.log(newItemInput.current?.innerHTML);
+	};
+
 	const logTypesOptions = logTypes.map((val: any) => {
 		return { label: val, value: val };
 	});
 
-	const newItemsArray = Array(newItems).fill(0);
+	// const newItemsArray = Array(newItems).fill(0);
 
 	const deleteOldInput = (item: any, delKey: any) => {
 		dispatch(deleteLogTypeDetail(selectedTaskType, item));
@@ -142,32 +173,15 @@ function TypeDetailsSettings(props: any) {
 					);
 				})}
 				{/* New Items */}
-				{newItemsArray.map((a, b) => {
-					const item = b;
+				{newItems.map((a, b) => {
+					const item: number = a;
 					return (
-						<Form.Item
-							key={item}
-							name={`new_${item}`}
-							style={{ marginBottom: "7px" }}
-							initialValue={item}
-							shouldUpdate={true}
-						>
-							<Row>
-								<Col xs={20} sm={22} md={12} lg={10}>
-									<Input />
-								</Col>
-								<Col>
-									<MinusCircleOutlined
-										className="dynamic-delete-button"
-										onClick={() => console.log(item)}
-										style={{
-											marginRight: "10px",
-											marginLeft: "10px",
-										}}
-									/>
-								</Col>
-							</Row>
-						</Form.Item>
+						<div key={a}>
+							<NewTypeItem
+								item={item}
+								newItemsdeleteHandler={newItemsdeleteHandler}
+							/>
+						</div>
 					);
 				})}
 
@@ -176,7 +190,12 @@ function TypeDetailsSettings(props: any) {
 						<Form.Item style={{ width: "100%" }}>
 							<Button
 								type="dashed"
-								onClick={() => setNewItems(newItems + 1)}
+								onClick={() =>
+									setNewItems((prev) => [
+										...prev,
+										arrMaker(prev),
+									])
+								}
 								style={{ width: "100%" }}
 								icon={<PlusOutlined />}
 							>

@@ -197,7 +197,9 @@ function TimeLog() {
 		}
 		setIsFetching(true);
 
-		dispatch(addNewTaskTypeDetail(selectedTaskType, newTaskTypeDetail));
+		dispatch(
+			addNewTaskTypeDetail(selectedTaskType, newTaskTypeDetail, false)
+		);
 
 		setSelectedTaskTypeDetail(newTaskTypeDetail);
 		setNewTaskTypeDetail("");
