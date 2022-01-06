@@ -50,40 +50,52 @@ function TypeDetailsSettings(props: any) {
 		return (Math.max(...previous) + 1) | 0;
 	};
 
-	const filterObject = (obj: any, predicate: any) =>
-		Object.keys(obj)
-			.filter((key) => predicate(obj[key]))
-			.reduce((res: any, key) => ((res[key] = obj[key]), res), {});
-
 	const onFinish = (values: any) => {
 		console.log("Received values of form:", values);
 
 		const newTypes: any = [];
 		const oldToUpdate: any = [];
-
+		// Getting changed values from submitted array
 		for (const key in values) {
 			if (key.slice(0, 3) === "new") {
-				newTypes.push(values[key]);
+				newTypes.push({ key: key.slice(4), data: values[key] });
 			} else if (key.slice(0, 3) === "old") {
 				const toCompare = key.slice(4);
 				if (toCompare !== values[key]) {
-					oldToUpdate.push(values[key]);
+					oldToUpdate.push({ old: key.slice(4), new: values[key] });
 				}
 			}
 		}
 		console.log("newTypes ~ newTypes", newTypes);
 		console.log("onFinish ~ oldToUpdate", oldToUpdate);
-
-		//  Add new changes first
+		// Publishing new values
 		if (newTypes.length > 0) {
-			newTypes.map((newTaskTypeDetail: string) => {
-				dispatch(
-					addNewTaskTypeDetail(
-						selectedTaskType,
-						newTaskTypeDetail,
-						true
+			newTypes.map((newTaskTypeDetail: any) => {
+				if (newTaskTypeDetail.data !== "") {
+					dispatch(
+						addNewTaskTypeDetail(
+							selectedTaskType,
+							newTaskTypeDetail.data,
+							true
+						)
+					).then(() => {
+						newItemsdeleteHandler(newTaskTypeDetail.key);
+					});
+				}
+			});
+		}
+		// Updating Old values
+		if (oldToUpdate.length > 0) {
+			oldToUpdate.map((task: any) => {
+				if (task.new !== "") {
+                    console.log(task.new,task.new)
+					dispatch(
+						addNewTaskTypeDetail(selectedTaskType, task.new, true)
 					)
-				);
+                    dispatch(
+                        deleteLogTypeDetail(selectedTaskType, task.old)
+                    );
+				}
 			});
 		}
 	};
@@ -96,28 +108,14 @@ function TypeDetailsSettings(props: any) {
 	const newItemsdeleteHandler = (item: any) => {
 		setNewItems((prev) => {
 			const test = prev.filter((val) => {
-				console.log(val, item);
 				if (val != item) {
 					return true;
 				} else {
 					return false;
 				}
 			});
-			console.log("test ~ test", test);
 			return [...test];
 		});
-
-		// setNewItems((prev: any) => {
-		// 	const test = prev.filter((val: string, key: number) => {
-		// 		console.log(prev);
-		// 		return key != item;
-		// 	});
-		// 	console.log("test ~ test", test);
-		// 	return [...test];
-		// 	// return test;
-		// });
-		// newItemInput.current?.innerHTML = "";
-		// console.log(newItemInput.current?.innerHTML);
 	};
 
 	const logTypesOptions = logTypes.map((val: any) => {
@@ -126,7 +124,7 @@ function TypeDetailsSettings(props: any) {
 
 	// const newItemsArray = Array(newItems).fill(0);
 
-	const deleteOldInput = (item: any, delKey: any) => {
+	const deleteOldInput = (item: any) => {
 		dispatch(deleteLogTypeDetail(selectedTaskType, item));
 	};
 	return (
@@ -145,7 +143,7 @@ function TypeDetailsSettings(props: any) {
 				{logTypesDetails.map((item: any, key: any) => {
 					return (
 						<Form.Item
-							key={item}
+							key={key}
 							name={`old_${item}`}
 							style={{ marginBottom: "7px" }}
 							initialValue={item}
@@ -159,7 +157,6 @@ function TypeDetailsSettings(props: any) {
 									<MinusCircleOutlined
 										className="dynamic-delete-button"
 										onClick={() => {
-											console.log(key);
 											deleteOldInput(item, key);
 										}}
 										style={{

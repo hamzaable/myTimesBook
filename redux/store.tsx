@@ -10,7 +10,7 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import firebase from "../firebase/firebaseConfig";
 import * as storage from "firebase/compat/storage";
 import rootReducer from "./rootReducers";
-import fbConfig  from "../firebase/firebaseConfig";
+import fbConfig from "../firebase/firebaseConfig";
 
 const store = createStore(
 	rootReducer,
@@ -40,4 +40,7 @@ export const rrfProps = {
 
 export default store;
 
-export type RootState = ReturnType<typeof store.getState>
+export type RootState = ReturnType<typeof store.getState>;
+
+
+export type AppDispatch = typeof store.dispatch
