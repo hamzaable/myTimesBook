@@ -51,7 +51,6 @@ function TypeDetailsSettings(props: any) {
 	};
 
 	const onFinish = (values: any) => {
-		console.log("Received values of form:", values);
 
 		const newTypes: any = [];
 		const oldToUpdate: any = [];
@@ -66,8 +65,6 @@ function TypeDetailsSettings(props: any) {
 				}
 			}
 		}
-		console.log("newTypes ~ newTypes", newTypes);
-		console.log("onFinish ~ oldToUpdate", oldToUpdate);
 		// Publishing new values
 		if (newTypes.length > 0) {
 			newTypes.map((newTaskTypeDetail: any) => {

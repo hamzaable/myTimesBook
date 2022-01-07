@@ -9,6 +9,7 @@ import {
 	Divider,
 	DatePicker,
 	TimePicker,
+    notification,
 } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { getFirebase } from "react-redux-firebase";
@@ -249,9 +250,6 @@ function TimeLog() {
 		return;
 	};
 
-	const testingFunction = () => {
-		form.setFieldsValue({ typeDetail: null });
-	};
 
 	const MomentToTimestamp = (data: any) => {
 		// @ts-ignore
@@ -307,7 +305,11 @@ function TimeLog() {
 		await query
 			.set(data)
 			.then(() => {
-				console.log("Document successfully written!");
+                notification["success"]({
+					message: `Time Log Saved`,
+					description: "Data added successfully",
+				});
+                form.resetFields()
 			})
 			.catch(() => {
 				console.log("Document not successfully written!");
