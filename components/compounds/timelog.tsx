@@ -26,7 +26,6 @@ import Loading from "./loading";
 import SelectWithAddnew from "../elements/selectWithAddnew";
 import moment from "moment";
 import { MaskedInput } from "antd-mask-input";
-import Renders from "../elements/renders";
 
 function TimeLog(props: any) {
 	const fb = getFirebase();

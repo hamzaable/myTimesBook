@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import Renders from "../../components/elements/renders";
 
 function Report() {
     const [state, setstate] = useState()

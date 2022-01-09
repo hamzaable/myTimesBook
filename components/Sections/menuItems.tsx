@@ -11,7 +11,6 @@ import {
 	PicLeftOutlined,
 	SettingOutlined,
 } from "@ant-design/icons";
-import Renders from "../elements/renders";
 
 function MenuItems() {
 	const dispatch = useDispatch();
