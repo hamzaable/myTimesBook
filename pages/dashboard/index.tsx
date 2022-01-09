@@ -15,75 +15,66 @@ import {
 	InputNumber,
 	Row,
 	Select,
+	Space,
 	Typography,
 } from "antd";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import DateRow from "../../components/compounds/dateRow";
 import TimeLog from "../../components/compounds/timelog";
+4;
+import styledComponents from "styled-components";
 
 function Dashboard(props: any) {
 	const user = useSelector((state: any) => state.fb.auth);
 
-	const [showDatePicker, setShowDatePicker] = useState(false);
-	const [selectedData, setselectedData] = useState<any>();
+	const [activeDate, setActiveDate] = useState<any>(moment());
+
+	useEffect(() => {
+		console.log(activeDate.format("ddd, DD MMM"));
+	}, [activeDate]);
 	return (
 		<div>
-			{/* <Navigation /> */}
-			<div
-				style={{
-					display: "flex",
-					gap: "30px",
-					placeContent: "center flex-start",
-					alignItems: "center",
-                    marginBottom:'10px'
+             <Space direction="vertical" size={"middle"} style={{width:"100%"}}>
+			<DateRow
+				activeDate={activeDate}
+				setActiveDate={(e: any) => {
+					setActiveDate(e);
 				}}
-			>
-				<div>
-					<Typography.Title
-						level={3}
+			/>
+			{/* <Navigation /> */}
+           
+			<TimeLog defaultDate={activeDate} />
+			
+				<Row style={{ width: "100%" }}>
+					<div
 						style={{
-							lineHeight: "1.6",
-							marginBottom: "0px",
+							width: "100%",
+							backgroundColor: "rgb(249, 250, 251)",
+							borderRadius: "10px",
+							boxShadow: "rgba(0, 0, 0, 0.1) 0px 0px 20px",
+                            padding: "12px",
 						}}
 					>
-						Today, 07/2022
-					</Typography.Title>
-				</div>
-				<div>
-					<CalendarOutlined
-						onClick={() => setShowDatePicker(!showDatePicker)}
-					/>
+						<Row gutter={12}>
+							<Col>
+								<label>projekt Name</label>
+							</Col>
 
-					<DatePicker
-						defaultValue={moment("2015-01-01", "YYYY-MM-DD")}
-						inputReadOnly
-						allowClear={false}
-						bordered={false}
-						open={showDatePicker}
-						onSelect={(e) => {
-							console.log(e);
-							setselectedData(e);
-							setShowDatePicker(false);
-						}}
-						style={{
-							border: "0px",
-							background: "transparent",
-							padding: "0px",
-							margin: "0px",
-							visibility: "hidden",
-							width: "0px",
-						}}
-					/>
-				</div>
-				<div>
-					<ArrowLeftOutlined />
-				</div>
-				<div>
-					<ArrowRightOutlined />
-				</div>
-			</div>
-			<TimeLog />
+                            <Col>
+								<label>projekt Detail</label>
+							</Col>
+						</Row>
+                        <Row gutter={12}>
+							<Col>
+								<label>Description</label>
+							</Col>
+
+						</Row>
+					</div>
+				</Row>
+			</Space>
 		</div>
 	);
 }

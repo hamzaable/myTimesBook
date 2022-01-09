@@ -22,6 +22,7 @@ const ProtectedRoute = ({
 		} else {
 			// router.push("dashboard");
 		}
+        
 	}, [router, isAuthenticated.uid, pathIsProtected, fbStatus]);
 
 	return isAuthenticated.uid && pathIsProtected && fbStatus ? (

@@ -35,11 +35,11 @@ function MyApp({ Component, pageProps, router }: AppProps) {
 	return (
 		<Provider store={store}>
 			<ReactReduxFirebaseProvider {...rrfProps}>
-				<ProtectedRoutes router={router}>
-					<AppWrapper>
+				<AppWrapper>
+					<ProtectedRoutes router={router}>
 						<Component {...pageProps} />
-					</AppWrapper>
-				</ProtectedRoutes>
+					</ProtectedRoutes>
+				</AppWrapper>
 			</ReactReduxFirebaseProvider>
 		</Provider>
 	);

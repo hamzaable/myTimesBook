@@ -3,6 +3,7 @@ import { Layout } from "antd";
 import styles from "./mainLayout.module.css";
 import MenuItems from "../Sections/menuItems";
 import { TrophyOutlined } from "@ant-design/icons";
+import Renders from "../elements/renders";
 
 const { Header, Content, Sider } = Layout;
 

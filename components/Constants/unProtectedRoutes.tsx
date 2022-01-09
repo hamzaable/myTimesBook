@@ -1,3 +1,3 @@
-export const unProtectedRoutes = ["/login", "/"];
+export const unProtectedRoutes = ["/login", "/","/test"];
 
 export default {unProtectedRoutes} ;

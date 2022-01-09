@@ -9,7 +9,7 @@ import {
 	Divider,
 	DatePicker,
 	TimePicker,
-    notification,
+	notification,
 } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { getFirebase } from "react-redux-firebase";
@@ -26,8 +26,9 @@ import Loading from "./loading";
 import SelectWithAddnew from "../elements/selectWithAddnew";
 import moment from "moment";
 import { MaskedInput } from "antd-mask-input";
+import Renders from "../elements/renders";
 
-function TimeLog() {
+function TimeLog(props: any) {
 	const fb = getFirebase();
 	const user = useSelector((state: any) => state.fb.auth);
 	const dispatch = useDispatch();
@@ -63,6 +64,13 @@ function TimeLog() {
 	>([{ label: "", value: "" }]);
 
 	const [description, setDescription] = useState("");
+
+	useEffect(() => {
+		console.log;
+		form.setFieldsValue({
+			date: props.defaultDate,
+		});
+	}, [props.defaultDate]);
 
 	useEffect(() => {
 		// if finish time change with start time present
@@ -250,7 +258,6 @@ function TimeLog() {
 		return;
 	};
 
-
 	const MomentToTimestamp = (data: any) => {
 		// @ts-ignore
 		return fb.firestore.Timestamp.fromDate(new Date(moment(data).format()));
@@ -305,11 +312,11 @@ function TimeLog() {
 		await query
 			.set(data)
 			.then(() => {
-                notification["success"]({
+				notification["success"]({
 					message: `Time Log Saved`,
 					description: "Data added successfully",
 				});
-                form.resetFields()
+				form.resetFields();
 			})
 			.catch(() => {
 				console.log("Document not successfully written!");
@@ -478,6 +485,7 @@ function TimeLog() {
 								format="DD.MM.YYYY"
 								showTime={false}
 								style={{ minWidth: "100%" }}
+								allowClear={false}
 							/>
 						</Form.Item>
 						<Row gutter={6}>
