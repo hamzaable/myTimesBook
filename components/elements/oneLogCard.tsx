@@ -72,8 +72,8 @@ function OneLogCard() {
 							<Row>
 								<span
 									style={{
-										backgroundColor: "#e1f5fe",
-										padding: "3px 8px",
+										// backgroundColor: "#e6f7ff",
+										// padding: "3px 8px",
 
 									}}
 								>
