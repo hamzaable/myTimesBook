@@ -4,7 +4,7 @@ import { timeLogActions } from "./timeLogReducer";
 
 const { updateAllData } = timeLogActions;
 
-export const getTimeLog = (data: any) => {
+export const getTimeLogs = (data: any) => {
 	return async (dispatch: any, getState: any, { getFirebase }: any) => {
 		const fb = getFirebase();
 		const state = getState();
@@ -14,8 +14,8 @@ export const getTimeLog = (data: any) => {
 			.collection("users")
 			.doc(state.fb.auth.uid)
 			.collection("timeLogs")
-			.where("timeStartCalc", ">=", data.toString())
-			.where("timeFinishCalc", "<=", (data + 86400000).toString());
+			.where("timeStartCalc", ">=", data.dateStart)
+			.where("timeStartCalc", "<=", data.dateFinish)
 
 		await query.get().then(async (querySnapshot: any) => {
 			await Promise.all(
@@ -25,6 +25,7 @@ export const getTimeLog = (data: any) => {
 				})
 			);
 		});
-		dispatch(updateAllData(fetchedData[0]));
+        console.log(fetchedData)
+		dispatch(updateAllData(fetchedData));
 	};
 };

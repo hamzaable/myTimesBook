@@ -74,17 +74,11 @@ function TimeLog(props: any) {
 	useEffect(() => {
 		// if finish time change with start time present
 		if (selectedStartTime && selectedFinishTime) {
-			const { hours: startHour, minutes: startMinute } =
-				timeExpander(selectedStartTime);
-
-			const { hours: finishHour, minutes: finishMinute } =
-				timeExpander(selectedFinishTime);
-
 			const calcDuration = timeDifferencer(
-				startHour,
-				startMinute,
-				finishHour,
-				finishMinute
+				moment(selectedStartTime).hours(),
+				moment(selectedStartTime).minutes(),
+				moment(selectedFinishTime).hours(),
+				moment(selectedFinishTime).minutes()
 			);
 			setSelectedDuration(calcDuration);
 			form.setFieldsValue({
@@ -107,25 +101,26 @@ function TimeLog(props: any) {
 
 	useEffect(() => {
 		if (selectedStartTime) {
-			if (selectedStartTime.length <= 5) {
-				const { hours: durationHour, minutes: durationhMinute } =
-					timeExpander(selectedDuration);
-				const { hours: startHour, minutes: startMinute } =
-					timeExpander(selectedStartTime);
-				const totalHours =
-					(durationHour * 60 +
-						durationhMinute +
-						(startHour * 60 + startMinute)) /
-					60;
-				const finishHours = makeTimeArray(totalHours);
-				const finishTime = `${("0" + finishHours[0]).slice(-2)}:${(
-					"0" + finishHours[1]
-				).slice(-2)}`;
-				setSelectedFinishTime(finishTime);
-				form.setFieldsValue({
-					timeFinish: moment(finishTime, "hh:mm"),
-				});
-			}
+			const { hours: durationHour, minutes: durationhMinute } =
+				timeExpander(selectedDuration);
+
+			const startHour = moment(selectedStartTime).hours();
+			const startMinute = moment(selectedStartTime).minutes();
+
+			const totalHours =
+				(durationHour * 60 +
+					durationhMinute +
+					(startHour * 60 + startMinute)) /
+				60;
+			const finishHours = makeTimeArray(totalHours);
+			const finishTime = `${moment().date()}  ${(
+				"0" + finishHours[0]
+			).slice(-2)}:${("0" + finishHours[1]).slice(-2)}`;
+
+			setSelectedFinishTime(moment(finishTime));
+			form.setFieldsValue({
+				timeFinish: moment(finishTime),
+			});
 		}
 	}, [selectedDuration]);
 
@@ -451,7 +446,7 @@ function TimeLog(props: any) {
 										onClick={reportToOnclick}
 										notFoundContent={
 											isFetching ? (
-												<Loading size="12" />
+												<Loading size={12} />
 											) : (
 												"No Data"
 											)
@@ -502,17 +497,17 @@ function TimeLog(props: any) {
 											"HH:mm"
 										)}
 										onSelect={(value) => {
-											const timeString =
-												moment(value).format("HH:mm");
-											setSelectedStartTime(timeString);
+											// const timeString =
+											// 	moment(value).format("HH:mm");
+											setSelectedStartTime(value);
 											form.setFieldsValue({
 												timeStart: value,
 											});
 										}}
 										onChange={(value) => {
-											const timeString =
-												moment(value).format("HH:mm");
-											setSelectedStartTime(timeString);
+											// const timeString =
+											// 	moment(value).format("HH:mm");
+											setSelectedStartTime(value);
 										}}
 									/>
 								</Form.Item>
@@ -531,17 +526,17 @@ function TimeLog(props: any) {
 											"HH:mm"
 										)}
 										onSelect={(value) => {
-											const timeString =
-												moment(value).format("HH:mm");
-											setSelectedFinishTime(timeString);
+											// const timeString =
+											// 	moment(value).format("HH:mm");
+											setSelectedFinishTime(value);
 											form.setFieldsValue({
 												timeFinish: value,
 											});
 										}}
 										onChange={(value) => {
-											const timeString =
-												moment(value).format("HH:mm");
-											setSelectedFinishTime(timeString);
+											// const timeString =
+											// 	moment(value).format("HH:mm");
+											setSelectedFinishTime(value);
 										}}
 									/>
 								</Form.Item>
