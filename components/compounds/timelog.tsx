@@ -26,6 +26,7 @@ import Loading from "./loading";
 import SelectWithAddnew from "../elements/selectWithAddnew";
 import moment from "moment";
 import { MaskedInput } from "antd-mask-input";
+import { momentToFirestamp } from "../../Functions/Converter";
 
 function TimeLog(props: any) {
 	const fb = getFirebase();
@@ -253,8 +254,7 @@ function TimeLog(props: any) {
 	};
 
 	const MomentToTimestamp = (data: any) => {
-		// @ts-ignore
-		return fb.firestore.Timestamp.fromDate(new Date(moment(data).format()));
+        return momentToFirestamp(data)
 	};
 
 	const handleFormSubmit = (data: any) => {
@@ -265,8 +265,8 @@ function TimeLog(props: any) {
 			moment(
 				data.date.format("DD/MM/YYYY") +
 					" " +
-					data.timeStart.format("hh:mm"),
-				"DD/MM/YYYY hh:mm"
+					data.timeStart.format("hh:mm a"),
+				"DD/MM/YYYY hh:mm a"
 			)
 		);
 
@@ -274,8 +274,8 @@ function TimeLog(props: any) {
 			moment(
 				data.date.format("DD/MM/YYYY") +
 					" " +
-					data.timeFinish.format("hh:mm"),
-				"DD/MM/YYYY hh:mm"
+					data.timeFinish.format("hh:mm a"),
+				"DD/MM/YYYY hh:mm a"
 			)
 		);
 

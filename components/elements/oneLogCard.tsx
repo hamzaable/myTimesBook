@@ -1,8 +1,23 @@
 import { Row, Col, Typography } from "antd";
+import moment from "moment";
 import React from "react";
 import { MdWorkOutline } from "react-icons/md";
+import { firestampToMoment } from "../../Functions/Converter";
 
-function OneLogCard() {
+function OneLogCard({
+	id,
+	type,
+	typeDetail,
+	tags,
+	startTime,
+	finishTime,
+	duration,
+	description,
+}: any) {
+	const timeStartMaker = () => {
+		return firestampToMoment(startTime).format("DD.MM.YYYY");
+	};
+
 	return (
 		<div
 			style={{
@@ -14,10 +29,16 @@ function OneLogCard() {
 				paddingLeft: "24px",
 				paddingRight: "24px",
 			}}
+			onClick={timeStartMaker}
 		>
 			<Row style={{ width: "100%", alignItems: "center" }}>
-				<Col span={19}>
-					<Row>
+				<Col span={16}>
+					<Row
+						style={{
+							justifyContent: "space-evenly",
+							alignItems: "center",
+						}}
+					>
 						<Col span={12}>
 							<Row gutter={12}>
 								<Col>
@@ -43,7 +64,7 @@ function OneLogCard() {
 													margin: "0px",
 												}}
 											>
-												Log Detail
+												{typeDetail}
 											</Typography.Paragraph>
 										</Col>
 									</Row>
@@ -57,8 +78,7 @@ function OneLogCard() {
 													marginBottom: "0",
 												}}
 											>
-												Log Description Lorem ipsum
-												dolor
+												{description}
 											</Typography.Paragraph>
 										</Col>
 									</Row>
@@ -67,23 +87,26 @@ function OneLogCard() {
 						</Col>
 						<Col span={8}>
 							<Row>
-								<label>Log Type</label>
+								<label>{type}</label>
 							</Row>
 							<Row>
 								<span
-									style={{
-										// backgroundColor: "#e6f7ff",
-										// padding: "3px 8px",
-
-									}}
+									style={
+										{
+											// backgroundColor: "#e6f7ff",
+											// padding: "3px 8px",
+										}
+									}
 								>
-									Tags
+									{tags.map((tag: string, i: number) =>
+										i == tags.length - 1 ? tag : `${tag}, `
+									)}
 								</span>
 							</Row>
 						</Col>
 					</Row>
 				</Col>
-				<Col span={5}>
+				<Col span={8}>
 					<Row
 						gutter={12}
 						style={{
@@ -92,7 +115,11 @@ function OneLogCard() {
 						}}
 					>
 						<Col>
-							<div>Time</div>
+							<div>
+								{firestampToMoment(startTime).format("h a")}{" "}
+								{" - "}
+								{firestampToMoment(finishTime).format("h a")}
+							</div>
 						</Col>
 
 						<Col>
@@ -103,7 +130,7 @@ function OneLogCard() {
 									// fontWeight: "600",
 								}}
 							>
-								04:00
+								{duration}
 							</Typography.Paragraph>
 						</Col>
 					</Row>
