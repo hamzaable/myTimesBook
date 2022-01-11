@@ -15,9 +15,6 @@ function Dashboard(props: any) {
 
 	const [activeDate, setActiveDate] = useState<any>(moment());
 
-    useEffect(() => {
-		fetchTimeLogs();
-	}, []);
 	useEffect(() => {
 		fetchTimeLogs();
 	}, [activeDate]);

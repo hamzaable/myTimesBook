@@ -66,7 +66,6 @@ function TimeLog(props: any) {
 	const [description, setDescription] = useState("");
 
 	useEffect(() => {
-		console.log;
 		form.setFieldsValue({
 			date: props.defaultDate,
 		});

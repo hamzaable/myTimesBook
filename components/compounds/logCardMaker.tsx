@@ -30,9 +30,6 @@ function LogCardMaker() {
 					style={{ width: "100%" }}
 				>
 					{logData.map((log: LOG) => {
-						{
-							console.log(log);
-						}
 						return (
 							<OneLogCard
 								key={log.id}
