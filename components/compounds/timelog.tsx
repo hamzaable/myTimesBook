@@ -11,7 +11,7 @@ import {
 	TimePicker,
 	notification,
 } from "antd";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getFirebase } from "react-redux-firebase";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -20,13 +20,17 @@ import {
 	getLogTypeDetails,
 	getLogTypes,
 	loadingFinish,
-	updateLogTypeDetailsList,
 } from "../../redux/settings/settingsActions";
 import Loading from "./loading";
 import SelectWithAddnew from "../elements/selectWithAddnew";
 import moment from "moment";
 import { MaskedInput } from "antd-mask-input";
-import { momentToFirestamp } from "../../Functions/Converter";
+import {
+	momentToFirestamp,
+	timeDifferencer,
+	timeExpander,
+	titleCase,
+} from "../../Functions/Converter";
 
 function TimeLog(props: any) {
 	const fb = getFirebase();
@@ -64,6 +68,7 @@ function TimeLog(props: any) {
 	>([{ label: "", value: "" }]);
 
 	const [description, setDescription] = useState("");
+	const [selectedDate, setSelectedDate] = useState(props.defaultDate);
 
 	useEffect(() => {
 		form.setFieldsValue({
@@ -104,18 +109,15 @@ function TimeLog(props: any) {
 			const { hours: durationHour, minutes: durationhMinute } =
 				timeExpander(selectedDuration);
 
-			const startHour = moment(selectedStartTime).hours();
-			const startMinute = moment(selectedStartTime).minutes();
+			const finishTime = moment(selectedStartTime);
 
-			const totalHours =
-				(durationHour * 60 +
-					durationhMinute +
-					(startHour * 60 + startMinute)) /
-				60;
-			const finishHours = makeTimeArray(totalHours);
-			const finishTime = `${moment().date()}  ${(
-				"0" + finishHours[0]
-			).slice(-2)}:${("0" + finishHours[1]).slice(-2)}`;
+			finishTime.date(selectedDate.date());
+			finishTime.month(selectedDate.month());
+			finishTime.year(selectedDate.year());
+
+			finishTime
+				.add(durationHour, "hours")
+				.add(durationhMinute, "minutes");
 
 			setSelectedFinishTime(moment(finishTime));
 			form.setFieldsValue({
@@ -132,49 +134,6 @@ function TimeLog(props: any) {
 		}
 	}, [selectedTaskType]);
 
-	const makeTimeArray = (num: any) => {
-		num = ("" + num).match(/^(-?[0-9]+)([,.][0-9]+)?/) || [];
-		return [~~num[1], +(0 + (num[2] * 60).toFixed(0)) || 0];
-	};
-
-	const timeExpander = (value: any) => {
-		if (value) {
-			if (value.length <= 5) {
-				const splitter = value.split(":");
-				return {
-					hours: parseInt(splitter[0]),
-					minutes: parseInt(splitter[1]),
-				};
-			}
-		}
-		return {
-			hours: 0,
-			minutes: 0,
-		};
-	};
-
-	const timeDifferencer = (
-		sh: number,
-		sm: number,
-		fh: number,
-		fm: number
-	) => {
-		const diff = makeTimeArray((fh * 60 + fm - (sh * 60 + sm)) / 60);
-		if (fh * 60 + fm - (sh * 60 + sm) < 0) {
-			return;
-		}
-		return `${("0" + diff[0]).slice(-2)}:${("0" + diff[1]).slice(-2)}`;
-	};
-
-	const titleCase = (str: string) => {
-		return str
-			.split(" ")
-			.map(
-				(item) =>
-					item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()
-			)
-			.join(" ");
-	};
 	const logTypesClick = async () => {
 		setIsFetching(true);
 		dispatch(getLogTypes());
@@ -253,7 +212,7 @@ function TimeLog(props: any) {
 	};
 
 	const MomentToTimestamp = (data: any) => {
-        return momentToFirestamp(data)
+		return momentToFirestamp(data);
 	};
 
 	const handleFormSubmit = (data: any) => {
@@ -278,6 +237,10 @@ function TimeLog(props: any) {
 			)
 		);
 
+		const totalMinutes =
+			timeExpander(selectedDuration).hours * 60 +
+			timeExpander(selectedDuration).minutes;
+
 		const submitter = {
 			description: description,
 			duration: selectedDuration,
@@ -289,6 +252,7 @@ function TimeLog(props: any) {
 			timeFinishCalc: timeFinishCalc,
 			type: selectedTaskType,
 			typeDetail: selectedTaskTypeDetail,
+			durationMinutes: +totalMinutes,
 		};
 		console.log("handleFormSubmit ~ submitter", submitter);
 
@@ -473,7 +437,9 @@ function TimeLog(props: any) {
 						<Form.Item label="Date & Time" name="date">
 							<DatePicker
 								placeholder="Select Date"
-								onChange={(e: any) => {}}
+								onChange={(e: any) => {
+									setSelectedDate(e);
+								}}
 								showToday={true}
 								format="DD.MM.YYYY"
 								showTime={false}
