@@ -211,15 +211,11 @@ function TimeLog(props: any) {
 		return;
 	};
 
-	const MomentToTimestamp = (data: any) => {
-		return momentToFirestamp(data);
-	};
-
 	const handleFormSubmit = (data: any) => {
-		const timeStartFormatted = MomentToTimestamp(data.timeStart);
-		const timeFinishFormatted = MomentToTimestamp(data.timeFinish);
+		const timeStartFormatted = momentToFirestamp(data.timeStart);
+		const timeFinishFormatted = momentToFirestamp(data.timeFinish);
 
-		const timeStartCalc = MomentToTimestamp(
+		const timeStartCalc = momentToFirestamp(
 			moment(
 				data.date.format("DD/MM/YYYY") +
 					" " +
@@ -228,7 +224,7 @@ function TimeLog(props: any) {
 			)
 		);
 
-		const timeFinishCalc = MomentToTimestamp(
+		const timeFinishCalc = momentToFirestamp(
 			moment(
 				data.date.format("DD/MM/YYYY") +
 					" " +
