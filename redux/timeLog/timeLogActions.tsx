@@ -16,6 +16,7 @@ export const getTimeLogs = (data: any) => {
 			.collection("timeLogs")
 			.where("timeStartCalc", ">=", data.dateStart)
 			.where("timeStartCalc", "<=", data.dateFinish)
+            .orderBy("timeStartCalc")
 
 		await query.get().then(async (querySnapshot: any) => {
 			await Promise.all(

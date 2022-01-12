@@ -15,6 +15,7 @@ const {
 
 export const getUserSettings = (data: any) => {
 	return async (dispatch: any, getState: any, { getFirebase }: any) => {
+		console.log("getUserSettings ~ getUserSettings");
 		const fb = getFirebase();
 		const state = getState();
 		let fetchedData: any = [];
@@ -81,6 +82,7 @@ export const loadingFinish = () => {
 
 export const getLogTypes = () => {
 	return async (dispatch: any, getState: any, { getFirebase }: any) => {
+        console.log("getLogTypes")
 		const fb = getFirebase();
 		const state = getState();
 		const documentRef = fb
@@ -114,6 +116,7 @@ export const getLogTypes = () => {
 
 export const getLogTypeDetails = (type: string) => {
 	return async (dispatch: any, getState: any, { getFirebase }: any) => {
+		console.log("getLogTypeDetails Ran");
 		const fb = getFirebase();
 		const state = getState();
 		const collectionRef = fb
