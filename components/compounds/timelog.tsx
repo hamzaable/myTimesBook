@@ -212,40 +212,45 @@ function TimeLog(props: any) {
 	};
 
 	const handleFormSubmit = (data: any) => {
+		const timeStartCalc = moment(selectedDate);
+		timeStartCalc.hours(moment(selectedStartTime).hour());
+		timeStartCalc.minutes(moment(selectedStartTime).minutes());
+		timeStartCalc.seconds(0);
+
+		const timeFinishCalc = moment(selectedDate);
+		timeFinishCalc.hours(moment(selectedFinishTime).hour());
+		timeFinishCalc.minutes(moment(selectedFinishTime).minutes());
+		timeFinishCalc.seconds(0);
+
 		const timeStartFormatted = momentToFirestamp(data.timeStart);
 		const timeFinishFormatted = momentToFirestamp(data.timeFinish);
 
-		const timeStartCalc = momentToFirestamp(
-			moment(
-				data.date.format("DD/MM/YYYY") +
-					" " +
-					data.timeStart.format("hh:mm a"),
-				"DD/MM/YYYY hh:mm a"
-			)
-		);
+		// if there is duration but no start and end time
 
-		const timeFinishCalc = momentToFirestamp(
-			moment(
-				data.date.format("DD/MM/YYYY") +
-					" " +
-					data.timeFinish.format("hh:mm a"),
-				"DD/MM/YYYY hh:mm a"
-			)
-		);
+		if (selectedDuration && !selectedFinishTime && !selectedStartTime) {
+			timeStartCalc.hours(0);
+			timeStartCalc.minutes(0);
+			timeStartCalc.seconds(0);
+
+			timeFinishCalc.hours(+timeExpander(selectedDuration).hours);
+			timeFinishCalc.minutes(timeExpander(selectedDuration).minutes);
+			timeFinishCalc.seconds(0);
+		}
 
 		const totalMinutes =
 			timeExpander(selectedDuration).hours * 60 +
 			timeExpander(selectedDuration).minutes;
 
 		const submitter = {
+			logdate: momentToFirestamp(selectedDate),
 			description: description,
 			duration: selectedDuration,
 			reportTo: selectedReportTo,
 			tags: data.tags,
 			timeStart: timeStartFormatted,
 			timeFinish: timeFinishFormatted,
-			timeStartCalc: timeStartCalc,
-			timeFinishCalc: timeFinishCalc,
+			timeStartCalc: momentToFirestamp(timeStartCalc),
+			timeFinishCalc: momentToFirestamp(timeFinishCalc),
 			type: selectedTaskType,
 			typeDetail: selectedTaskTypeDetail,
 			durationMinutes: +totalMinutes,
