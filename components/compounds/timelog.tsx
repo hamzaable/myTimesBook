@@ -222,9 +222,6 @@ function TimeLog(props: any) {
 		timeFinishCalc.minutes(moment(selectedFinishTime).minutes());
 		timeFinishCalc.seconds(0);
 
-		const timeStartFormatted = momentToFirestamp(data.timeStart);
-		const timeFinishFormatted = momentToFirestamp(data.timeFinish);
-
 		// if there is duration but no start and end time
 
 		if (selectedDuration && !selectedFinishTime && !selectedStartTime) {
@@ -236,6 +233,18 @@ function TimeLog(props: any) {
 			timeFinishCalc.minutes(timeExpander(selectedDuration).minutes);
 			timeFinishCalc.seconds(0);
 		}
+
+		// if nothin in time is entered , just add the start time
+		if (!selectedDuration && !selectedFinishTime && !selectedStartTime) {
+			timeStartCalc.hours(moment().hours());
+			timeStartCalc.minutes(moment().minutes());
+			timeStartCalc.seconds(0);
+
+			data.timeStart = timeStartCalc;
+		}
+
+		const timeStartFormatted = momentToFirestamp(data.timeStart);
+		const timeFinishFormatted = momentToFirestamp(data.timeFinish);
 
 		const totalMinutes =
 			timeExpander(selectedDuration).hours * 60 +
@@ -256,7 +265,6 @@ function TimeLog(props: any) {
 			durationMinutes: +totalMinutes,
 		};
 		console.log("handleFormSubmit ~ submitter", submitter);
-
 		postNewTimeLog(submitter);
 	};
 
@@ -275,6 +283,11 @@ function TimeLog(props: any) {
 					description: "Data added successfully",
 				});
 				form.resetFields();
+				form.setFieldsValue({
+					date: props.defaultDate,
+				});
+                setSelectedDate(props.defaultDate)
+                
 			})
 			.catch(() => {
 				console.log("Document not successfully written!");

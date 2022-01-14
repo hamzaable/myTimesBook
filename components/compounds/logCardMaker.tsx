@@ -1,12 +1,27 @@
 import React from "react";
 import OneLogCard from "../elements/oneLogCard";
 import { useSelector, useDispatch } from "react-redux";
-import { Space } from "antd";
+import { Col, Divider, Row, Space, Typography } from "antd";
+import { makeTimeArray } from "../../Functions/Converter";
 
 function LogCardMaker() {
 	const logData: LOG[] = useSelector(
 		(state: any) => state.timeLog.dashboardTimeLogData
 	);
+
+	const totalMinutes = () => {
+		const temp = makeTimeArray(
+			logData
+				.map((obj) => {
+					return obj.durationMinutes;
+				})
+				.reduce((a, b) => {
+					return a + b;
+				}, 0) / 60
+		);
+
+		return temp[0] + ":" + temp[1];
+	};
 
 	interface LOG {
 		id: string;
@@ -20,6 +35,7 @@ function LogCardMaker() {
 		typeDetail: string;
 		tags: string[];
 		description: string;
+		durationMinutes: number;
 	}
 	return (
 		<>
@@ -44,6 +60,24 @@ function LogCardMaker() {
 							/>
 						);
 					})}
+
+					<div>
+						<Divider
+							orientation="right"
+							plain
+							style={{ borderWidth: "2px", margin: "0 0 10px 0" }}
+						></Divider>
+						<Row style={{ width: "100%" }}>
+							<Col span={23}>
+								<Typography.Title
+									level={3}
+									style={{ textAlign: "right" }}
+								>
+									{totalMinutes()}
+								</Typography.Title>
+							</Col>
+						</Row>
+					</div>
 				</Space>
 			)}
 		</>
