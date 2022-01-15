@@ -31,6 +31,7 @@ import {
 	timeExpander,
 	titleCase,
 } from "../../Functions/Converter";
+import { getTimeLogs } from "../../redux/timeLog/timeLogActions";
 
 function TimeLog(props: any) {
 	const fb = getFirebase();
@@ -130,6 +131,7 @@ function TimeLog(props: any) {
 		if (selectedTaskType && selectedTaskType !== "") {
 			setIsFetching(true);
 			dispatch(getLogTypeDetails(selectedTaskType));
+
 			setIsFetching(false);
 		}
 	}, [selectedTaskType]);
@@ -251,7 +253,7 @@ function TimeLog(props: any) {
 			timeExpander(selectedDuration).minutes;
 
 		const submitter = {
-			logdate: momentToFirestamp(selectedDate),
+			logDate: momentToFirestamp(selectedDate),
 			description: description,
 			duration: selectedDuration,
 			reportTo: selectedReportTo,
@@ -286,8 +288,17 @@ function TimeLog(props: any) {
 				form.setFieldsValue({
 					date: props.defaultDate,
 				});
-                setSelectedDate(props.defaultDate)
-                
+				setSelectedDate(props.defaultDate);
+				dispatch(
+					getTimeLogs({
+						dateStart: new Date(
+							moment(selectedDate).startOf("day").toDate()
+						),
+						dateFinish: new Date(
+							moment(selectedDate).endOf("day").toDate()
+						),
+					})
+				);
 			})
 			.catch(() => {
 				console.log("Document not successfully written!");

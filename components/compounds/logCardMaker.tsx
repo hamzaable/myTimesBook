@@ -70,10 +70,10 @@ function LogCardMaker() {
 						<Row style={{ width: "100%" }}>
 							<Col span={23}>
 								<Typography.Title
-									level={3}
+									level={4}
 									style={{ textAlign: "right" }}
 								>
-									{totalMinutes()}
+									{"Total : " + totalMinutes()}
 								</Typography.Title>
 							</Col>
 						</Row>
