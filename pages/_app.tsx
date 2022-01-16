@@ -11,6 +11,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getUserSettings } from "../redux/settings/settingsActions";
 import Router from "next/router";
 import { unProtectedRoutes } from "../components/Constants/unProtectedRoutes";
+import dynamic from "next/dynamic";
 
 const AppWrapper: React.FC = (props) => {
 	const isAuthenticated = useSelector((state: RootState) => state.fb.auth);
@@ -46,3 +47,7 @@ function MyApp({ Component, pageProps, router }: AppProps) {
 }
 
 export default MyApp;
+
+// export default dynamic(() => Promise.resolve(MyApp), {
+//     ssr: false,
+//   });

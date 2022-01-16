@@ -548,7 +548,7 @@ function TimeLog(props: any) {
 						</Form.Item>
 					</Col>
 				</Row>
-				<Form.Item>
+				<Form.Item style={{marginBottom:"0"}}>
 					<Button
 						type="primary"
 						style={{ width: "100%", maxWidth: "200px" }}

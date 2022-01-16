@@ -9,6 +9,9 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
+    "@nivo/bar": "^0.79.1",
+    "@nivo/core": "^0.79.0",
+    "@nivo/line": "^0.79.1",
     "@reduxjs/toolkit": "^1.7.0",
     "antd": "^4.17.3",
     "antd-demo-ts": "^0.1.0",

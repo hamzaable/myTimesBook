@@ -1,12 +1,11 @@
-import { Button, Space } from "antd";
-import firebase from "firebase/compat";
+import {  Space } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import {  useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import DateRow from "../../components/compounds/dateRow";
+import HomeChart from "../../components/compounds/homeChart";
 import LogCardMaker from "../../components/compounds/logCardMaker";
 import TimeLog from "../../components/compounds/timelog";
-import OneLogCard from "../../components/elements/oneLogCard";
 import { getTimeLogs } from "../../redux/timeLog/timeLogActions";
 
 function Dashboard(props: any) {
@@ -33,7 +32,7 @@ function Dashboard(props: any) {
 				size={"middle"}
 				style={{ width: "100%" }}
 			>
-				<Button onClick={fetchTimeLogs}>Fetch TimeLogs</Button>
+				{/* <Button onClick={fetchTimeLogs}>Fetch TimeLogs</Button> */}
 				<DateRow
 					activeDate={activeDate}
 					setActiveDate={(e: any) => {
@@ -42,7 +41,8 @@ function Dashboard(props: any) {
 				/>
 
 				<TimeLog defaultDate={activeDate} />
-                <LogCardMaker />
+				<LogCardMaker />
+				<HomeChart />
 			</Space>
 		</div>
 	);

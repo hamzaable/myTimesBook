@@ -20,7 +20,7 @@ function LogCardMaker() {
 				}, 0) / 60
 		);
 
-		return temp[0] + ":" + temp[1];
+		return temp[0].toString().padStart(2, "0") + ":" + temp[1].toString().padStart(2, "0");
 	};
 
 	interface LOG {
