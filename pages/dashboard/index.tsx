@@ -8,6 +8,7 @@ import LogCardMaker from "../../components/compounds/logCardMaker";
 import TimeLog from "../../components/compounds/timelog";
 import { getTimeLogs } from "../../redux/timeLog/timeLogActions";
 
+
 function Dashboard(props: any) {
 	const dispatch = useDispatch();
 
