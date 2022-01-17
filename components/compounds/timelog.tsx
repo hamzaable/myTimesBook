@@ -33,10 +33,10 @@ import {
 } from "../../Functions/Converter";
 import { getTimeLogs } from "../../redux/timeLog/timeLogActions";
 
-interface TIMELOG{
-    defaultDate:moment.Moment;
+interface TIMELOG {
+	defaultDate: moment.Moment;
 }
-const TimeLog:React.FC<TIMELOG> = (props: any)=> {
+const TimeLog: React.FC<TIMELOG> = (props: any) => {
 	const fb = getFirebase();
 	const user = useSelector((state: any) => state.fb.auth);
 	const dispatch = useDispatch();
@@ -78,6 +78,7 @@ const TimeLog:React.FC<TIMELOG> = (props: any)=> {
 		form.setFieldsValue({
 			date: props.defaultDate,
 		});
+		setSelectedDate(props.defaultDate);
 	}, [props.defaultDate]);
 
 	useEffect(() => {
@@ -551,7 +552,7 @@ const TimeLog:React.FC<TIMELOG> = (props: any)=> {
 						</Form.Item>
 					</Col>
 				</Row>
-				<Form.Item style={{marginBottom:"0"}}>
+				<Form.Item style={{ marginBottom: "0" }}>
 					<Button
 						type="primary"
 						style={{ width: "100%", maxWidth: "200px" }}
@@ -564,6 +565,6 @@ const TimeLog:React.FC<TIMELOG> = (props: any)=> {
 			</Form>
 		</Card>
 	);
-}
+};
 
 export default TimeLog;

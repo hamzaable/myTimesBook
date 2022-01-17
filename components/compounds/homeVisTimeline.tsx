@@ -28,7 +28,9 @@ function HomeVisTimeline({ defaultDate }: { defaultDate: moment.Moment }) {
 					};
 				})
 			);
-		}
+		}else{
+            setItems([])
+        }
 	}, [logData]);
 
 	useEffect(() => {
