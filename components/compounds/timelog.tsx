@@ -33,7 +33,10 @@ import {
 } from "../../Functions/Converter";
 import { getTimeLogs } from "../../redux/timeLog/timeLogActions";
 
-function TimeLog(props: any) {
+interface TIMELOG{
+    defaultDate:moment.Moment;
+}
+const TimeLog:React.FC<TIMELOG> = (props: any)=> {
 	const fb = getFirebase();
 	const user = useSelector((state: any) => state.fb.auth);
 	const dispatch = useDispatch();

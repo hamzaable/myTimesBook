@@ -57,8 +57,16 @@ a {
 	margin-left: 20px;
 	margin-right: 20px;
 }
-/* 
-    background-color: rgb(249, 250, 251);
-    box-shadow: rgb(0 0 0 / 10%) 0px 0px 20px; 
-    
-*/
+.vis-timeline {
+  border:0px !important;
+  /* border-radius: 10px!important; */
+}
+.vis-current-time {
+    background-color: #1890ff!important;
+    width: 2px!important;
+    z-index: 1!important;
+    pointer-events: none!important;
+}
+.vis-panel.vis-center {
+    border-bottom: 0px!important;
+}

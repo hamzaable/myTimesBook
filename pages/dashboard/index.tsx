@@ -1,18 +1,18 @@
-import {  Space } from "antd";
+import { Space } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import DateRow from "../../components/compounds/dateRow";
 import HomeChart from "../../components/compounds/homeChart";
+import HomeVisTimeline from "../../components/compounds/homeVisTimeline";
 import LogCardMaker from "../../components/compounds/logCardMaker";
 import TimeLog from "../../components/compounds/timelog";
 import { getTimeLogs } from "../../redux/timeLog/timeLogActions";
 
-
 function Dashboard(props: any) {
 	const dispatch = useDispatch();
 
-	const [activeDate, setActiveDate] = useState<any>(moment());
+	const [activeDate, setActiveDate] = useState<moment.Moment>(moment());
 
 	useEffect(() => {
 		fetchTimeLogs();
@@ -36,10 +36,20 @@ function Dashboard(props: any) {
 				{/* <Button onClick={fetchTimeLogs}>Fetch TimeLogs</Button> */}
 				<DateRow
 					activeDate={activeDate}
-					setActiveDate={(e: any) => {
+					setActiveDate={(e:moment.Moment) => {
 						setActiveDate(e);
 					}}
 				/>
+
+				<div
+					style={{
+						// backgroundColor: "rgb(249 250 251)",
+						boxShadow: "rgba(0, 0, 0, 0.1) 0px 0px 20px",
+                        borderRadius:'10px'
+					}}
+				>
+					<HomeVisTimeline defaultDate={activeDate}/>
+				</div>
 
 				<TimeLog defaultDate={activeDate} />
 				<LogCardMaker />

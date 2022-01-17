@@ -3,6 +3,7 @@ import OneLogCard from "../elements/oneLogCard";
 import { useSelector, useDispatch } from "react-redux";
 import { Col, Divider, Row, Space, Typography } from "antd";
 import { makeTimeArray } from "../../Functions/Converter";
+import { LOG } from "../../types/types";
 
 function LogCardMaker() {
 	const logData: LOG[] = useSelector(
@@ -23,20 +24,6 @@ function LogCardMaker() {
 		return temp[0].toString().padStart(2, "0") + ":" + temp[1].toString().padStart(2, "0");
 	};
 
-	interface LOG {
-		id: string;
-		duration: string;
-		type: string;
-		timeStart: { seconds: number; nanoseconds: number };
-		timeStartCalc: { seconds: number; nanoseconds: number };
-		timeFinish: { seconds: number; nanoseconds: number };
-		timeFinishCalc: { seconds: number; nanoseconds: number };
-		reportTo: string;
-		typeDetail: string;
-		tags: string[];
-		description: string;
-		durationMinutes: number;
-	}
 	return (
 		<>
 			{logData.length > 0 && (

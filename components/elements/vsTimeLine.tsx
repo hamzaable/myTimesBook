@@ -1,24 +1,22 @@
 import moment from "moment";
-import dynamic from "next/dynamic";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Timeline, TimelineOptions } from "vis-timeline/esnext";
 import "vis-timeline/styles/vis-timeline-graph2d.css";
 
-// const Timeline = dynamic(
-// 	() => import("vis-timeline/peer").then((mod: any) => mod.Timeline),
-// 	{ ssr: false }
-// );
-
-function VsTimeLine() {
+function VsTimeLine({
+	items,start,end
+}: {
+	items: {
+		content: string;
+		start: string;
+		end: string;
+	}[];
+    start:any,
+    end:any
+}) {
 	const timelineRef = useRef<any>();
-	const data = [
-		{ quarter: 1, earnings: 13000 },
-		{ quarter: 2, earnings: 16500 },
-		{ quarter: 3, earnings: 14250 },
-		{ quarter: 4, earnings: 19000 },
-	];
-
-	const options: any = {
+  
+	const options: TimelineOptions = {
 		editable: {
 			add: true,
 			remove: false,
@@ -43,10 +41,8 @@ function VsTimeLine() {
 			axis: "bottom",
 			item: "bottom",
 		},
-
-		max: moment().endOf("day").format(),
-		min: moment().startOf("day").format(),
-
+		max: start,
+		min: end,
 		stack: true,
 		stackSubgroups: false,
 		type: "range",
@@ -58,20 +54,10 @@ function VsTimeLine() {
 		showCurrentTime: true,
 		showMajorLabels: false,
 	};
-	const items = [
-		{
-			content: "Step1",
-			start: moment().add(1, "hours").format(),
-			end: moment().add(7, "hours").format(),
-		},
-		{
-			content: "Step2",
-			start: moment().subtract(4, "hours").format(),
-			end: moment().format(),
-		},
-	];
 
-	useEffect(() => {
+	
+
+    useEffect(() => {
 		const visTimeline = document.createElement("div");
 		timelineRef.current.append(visTimeline);
 		new Timeline(visTimeline, items, options);
@@ -80,11 +66,17 @@ function VsTimeLine() {
 				timelineRef.current.innerHTML = "";
 			}
 		};
-	}, []);
+	}, [items]);
+
+
 	return (
-		<div>
-			<div id={"timeline"} ref={timelineRef}></div>
-		</div>
+		<>
+			<div
+				id={"timeline"}
+				style={{ fontSize: "11px" }}
+				ref={timelineRef}
+			></div>
+		</>
 	);
 }
 

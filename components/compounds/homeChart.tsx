@@ -42,14 +42,7 @@ const HomeChart = () => {
 	];
 	return (
 		<>
-			<div
-				style={{
-					// backgroundColor: "rgb(249 250 251)",
-					boxShadow: "rgba(0, 0, 0, 0.1) 0px 0px 20px",
-				}}
-			>
-				<VsTimeLine />
-			</div>
+			
 			<div style={{ height: "300px", width: "600px", margin: "auto" }}>
 				<GuageChart data={data} />
 			</div>
