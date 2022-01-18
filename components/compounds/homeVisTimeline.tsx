@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { firestampToMoment } from "../../Functions/Converter";
 
 interface ITEM {
+    id:string;
 	content: string;
 	start: any;
 	end: any;
@@ -22,6 +23,7 @@ function HomeVisTimeline({ defaultDate }: { defaultDate: moment.Moment }) {
 			setItems(
 				logData.map((item: LOG) => {
 					return {
+                        id:item.id,
 						content: item.typeDetail,
 						start: firestampToMoment(item.timeStartCalc).format(),
 						end: firestampToMoment(item.timeFinishCalc).format(),

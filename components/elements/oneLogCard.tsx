@@ -14,8 +14,9 @@ function OneLogCard({
 	duration,
 	description,
 }: any) {
-	const timeStartMaker = () => {
-		return firestampToMoment(startTime).format("DD.MM.YYYY");
+	const timeStartMaker = (logId: string) => {
+        console.log(logId)
+		// return firestampToMoment(startTime).format("DD.MM.YYYY");
 	};
 
 	return (
@@ -29,7 +30,7 @@ function OneLogCard({
 				paddingLeft: "24px",
 				paddingRight: "24px",
 			}}
-			onClick={timeStartMaker}
+			onClick={() => timeStartMaker(id)}
 		>
 			<Row style={{ width: "100%", alignItems: "center" }}>
 				<Col span={16}>

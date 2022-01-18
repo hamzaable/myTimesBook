@@ -44,8 +44,9 @@ function Dashboard(props: any) {
 				<div
 					style={{
 						// backgroundColor: "rgb(249 250 251)",
-						boxShadow: "rgba(0, 0, 0, 0.1) 0px 0px 20px",
-                        borderRadius:'10px'
+						// boxShadow: "rgba(0, 0, 0, 0.1) 0px 0px 20px",
+                        borderRadius:'10px',
+                        border: '1px solid lightgrey',
 					}}
 				>
 					<HomeVisTimeline defaultDate={activeDate}/>
