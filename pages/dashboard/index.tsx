@@ -19,6 +19,7 @@ function Dashboard(props: any) {
 	}, [activeDate]);
 
 	const fetchTimeLogs = () => {
+        console.log("I ran")
 		dispatch(
 			getTimeLogs({
 				dateStart: new Date(moment(activeDate).startOf("day").toDate()),

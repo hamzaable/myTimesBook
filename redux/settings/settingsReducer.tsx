@@ -20,6 +20,7 @@ const initialState = {
 	globalLoading: false,
 	logTypesData: [],
 	logTypeDetailsData: [],
+	isTimeLogModalVisible: { isVisible: false, openID: "id" },
 };
 
 const settingsSlice = createSlice({
@@ -68,6 +69,9 @@ const settingsSlice = createSlice({
 					}
 				}
 			);
+		},
+		setTimeLogModal(state, action) {
+			state.isTimeLogModalVisible = action.payload;
 		},
 	},
 });

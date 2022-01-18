@@ -11,6 +11,7 @@ const {
 	deleteLogTypeDetails,
 	addLogType,
 	addLogTypeDetail,
+	setTimeLogModal,
 } = settingsActions;
 
 export const getUserSettings = (data: any) => {
@@ -82,7 +83,7 @@ export const loadingFinish = () => {
 
 export const getLogTypes = () => {
 	return async (dispatch: any, getState: any, { getFirebase }: any) => {
-        console.log("getLogTypes")
+		console.log("getLogTypes");
 		const fb = getFirebase();
 		const state = getState();
 		const documentRef = fb
@@ -269,5 +270,11 @@ export const addNewTaskTypeDetail = (
 			.catch(() => {
 				console.log("Document not successfully written!");
 			});
+	};
+};
+
+export const getTimeLogModal = (visibility: boolean, id: string) => {
+	return async (dispatch: any, getState: any, { getFirebase }: any) => {
+		dispatch(setTimeLogModal({ isVisible: visibility, openID: id }));
 	};
 };

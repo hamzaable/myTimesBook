@@ -5,6 +5,7 @@ import MainLayout from "./Layout/mainLayout";
 import { unProtectedRoutes } from "../components/Constants/unProtectedRoutes";
 import { AppProps } from "next/app";
 import { Router } from "next/router";
+import TimeLogModal from "./compounds/timeLogModal";
 
 const ProtectedRoute = ({
 	router,
@@ -22,11 +23,13 @@ const ProtectedRoute = ({
 		} else {
 			// router.push("dashboard");
 		}
-        
 	}, [router, isAuthenticated.uid, pathIsProtected, fbStatus]);
 
 	return isAuthenticated.uid && pathIsProtected && fbStatus ? (
-		<MainLayout>{children}</MainLayout>
+		<>
+			<MainLayout>{children}</MainLayout>
+			<TimeLogModal />
+		</>
 	) : (
 		<>{children}</>
 	);

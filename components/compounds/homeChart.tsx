@@ -7,6 +7,40 @@ const GuageChart = dynamic<any>(() => import("../elements/guageChart"), {
 	ssr: false,
 });
 
+
+const styles:any = {
+	root: {
+		textAlign: "center",
+		position: "relative",
+		width: "400px",
+		height: "400px",
+		// height: "300px",
+		// width: "600px",
+		margin: "auto",
+	},
+	overlay: {
+		position: "absolute",
+		top: 0,
+		right: 0,
+		bottom: 40,
+		left: 0,
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "center",
+		justifyContent: "center",
+		fontSize: 40,
+		color: "black",
+		// background: "#FFFFFF33",
+		textAlign: "center",
+		// This is important to preserve the chart interactivity
+		pointerEvents: "none",
+	},
+	totalLabel: {
+		// fontSize: 24,
+        margin: 0,
+	},
+};
+
 const HomeChart = () => {
 	const data = [
 		{
@@ -42,9 +76,12 @@ const HomeChart = () => {
 	];
 	return (
 		<>
-			
-			<div style={{ height: "300px", width: "600px", margin: "auto" }}>
+			<div style={styles.root}>
 				<GuageChart data={data} />
+				<div style={styles.overlay}>
+                    <Typography.Title style={styles.totalLabel}  level={4}>Total</Typography.Title>
+                    <Typography.Title style={styles.totalLabel}  level={4}>05:00</Typography.Title>
+				</div>
 			</div>
 		</>
 	);

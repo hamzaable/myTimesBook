@@ -3,6 +3,8 @@ import moment from "moment";
 import React from "react";
 import { MdWorkOutline } from "react-icons/md";
 import { firestampToMoment } from "../../Functions/Converter";
+import { getTimeLogModal } from "../../redux/settings/settingsActions";
+import { useDispatch } from "react-redux";
 
 function OneLogCard({
 	id,
@@ -14,8 +16,11 @@ function OneLogCard({
 	duration,
 	description,
 }: any) {
+	const dispatch = useDispatch();
 	const timeStartMaker = (logId: string) => {
-        console.log(logId)
+		console.log(logId);
+		dispatch(getTimeLogModal(true, logId));
+
 		// return firestampToMoment(startTime).format("DD.MM.YYYY");
 	};
 

@@ -39,6 +39,7 @@ function MyApp({ Component, pageProps, router }: AppProps) {
 				<AppWrapper>
 					<ProtectedRoutes router={router}>
 						<Component {...pageProps} />
+                        
 					</ProtectedRoutes>
 				</AppWrapper>
 			</ReactReduxFirebaseProvider>

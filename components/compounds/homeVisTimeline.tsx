@@ -35,9 +35,6 @@ function HomeVisTimeline({ defaultDate }: { defaultDate: moment.Moment }) {
         }
 	}, [logData]);
 
-	useEffect(() => {
-		console.log(items);
-	}, [items]);
 
 	return (
 		<>
