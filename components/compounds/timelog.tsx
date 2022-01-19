@@ -19,6 +19,7 @@ import {
 	addNewTaskTypeDetail,
 	getLogTypeDetails,
 	getLogTypes,
+	getParentsList,
 	loadingFinish,
 } from "../../redux/settings/settingsActions";
 import Loading from "./loading";
@@ -31,7 +32,7 @@ import {
 	timeExpander,
 	titleCase,
 } from "../../Functions/Converter";
-import { getTimeLogs } from "../../redux/timeLog/timeLogActions";
+import { addNewTimeLog, getTimeLogs } from "../../redux/timeLog/timeLogActions";
 
 interface TIMELOG {
 	defaultDate: moment.Moment;
@@ -175,40 +176,13 @@ const TimeLog: React.FC<TIMELOG> = (props: any) => {
 		setIsFetching(false);
 	};
 	const reportToOnclick = async (e: any) => {
-		// dispatch(loadingStart());
-		getParents();
-	};
-
-	const getParents = async () => {
-		// dispatch(loadingStart());
 		setIsFetching(true);
-
-		const collectionRef = fb.firestore().collection(`userEmployees`);
-		// const documentRef = collectionRef.where("UID", "==", state.fb.auth.uid);
-		const documentRef = collectionRef;
-		const results: { label: string; value: string }[] = [];
-		await documentRef
-			.get()
-			.then((querySnapshot) => {
-				querySnapshot.forEach((doc) => {
-					if (doc.exists) {
-						if (doc.data()["UID"] === user.uid) {
-							results.push({
-								value: doc.data()["PID"],
-								label: doc.data()["pidName"],
-							});
-						}
-					}
-				});
-			})
-			.catch((error) => {
-				console.log("Error getting documents: ", error);
-			});
-
+		const results: { label: string; value: string }[] = await dispatch(
+			getParentsList()
+		);
 		const uniqueResults: { label: string; value: string }[] = [
 			...new Set(results),
 		];
-		dispatch(loadingFinish());
 		if (uniqueResults.length !== 0) {
 			setReportToOptions(uniqueResults);
 		} else {
@@ -271,42 +245,24 @@ const TimeLog: React.FC<TIMELOG> = (props: any) => {
 			durationMinutes: +totalMinutes,
 		};
 		console.log("handleFormSubmit ~ submitter", submitter);
-		postNewTimeLog(submitter);
-	};
 
-	const postNewTimeLog = async (data: any) => {
-		const query = fb
-			.firestore()
-			.collection(`users`)
-			.doc(user.uid)
-			.collection("timeLogs")
-			.doc();
-		await query
-			.set(data)
-			.then(() => {
-				notification["success"]({
-					message: `Time Log Saved`,
-					description: "Data added successfully",
-				});
-				form.resetFields();
-				form.setFieldsValue({
-					date: props.defaultDate,
-				});
-				setSelectedDate(props.defaultDate);
-				dispatch(
-					getTimeLogs({
-						dateStart: new Date(
-							moment(selectedDate).startOf("day").toDate()
-						),
-						dateFinish: new Date(
-							moment(selectedDate).endOf("day").toDate()
-						),
-					})
-				);
-			})
-			.catch(() => {
-				console.log("Document not successfully written!");
+		dispatch(addNewTimeLog(submitter)).then(() => {
+			form.resetFields();
+			form.setFieldsValue({
+				date: props.defaultDate,
 			});
+			setSelectedDate(props.defaultDate);
+			dispatch(
+				getTimeLogs({
+					dateStart: new Date(
+						moment(selectedDate).startOf("day").toDate()
+					),
+					dateFinish: new Date(
+						moment(selectedDate).endOf("day").toDate()
+					),
+				})
+			);
+		});
 	};
 
 	return globalLoading ? (

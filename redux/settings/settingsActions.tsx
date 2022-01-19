@@ -278,3 +278,36 @@ export const getTimeLogModal = (visibility: boolean, id: string) => {
 		dispatch(setTimeLogModal({ isVisible: visibility, openID: id }));
 	};
 };
+
+export const getParentsList = () => {
+	return async (
+		dispatch: any,
+		getState: any,
+		{ getFirebase }
+	) => {
+		const fb = getFirebase();
+		const state = getState();
+		const results: { label: string; value: string }[] = [];
+		await fb
+			.firestore()
+			.collection(`userEmployees`)
+			.get()
+			.then((querySnapshot: any) => {
+				querySnapshot.forEach((doc: any) => {
+					if (doc.exists) {
+						if (doc.data()["UID"] === state.fb.auth.uid) {
+							results.push({
+								value: doc.data()["PID"],
+								label: doc.data()["pidName"],
+							});
+						}
+					}
+				});
+			})
+			.catch((error: any) => {
+				console.log("Error getting documents: ", error);
+			});
+
+		return results;
+	};
+};

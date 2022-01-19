@@ -43,6 +43,10 @@ function TimeLogModal(props: any) {
 				onOk={handleOk}
 				confirmLoading={confirmLoading}
 				onCancel={handleCancel}
+				destroyOnClose={true}
+				keyboard={true}
+				width={800}
+				style={{ top: "50px", }}
 			>
 				<TimeLog defaultDate={activeDate} />
 			</Modal>

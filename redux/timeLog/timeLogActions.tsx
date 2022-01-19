@@ -16,7 +16,7 @@ export const getTimeLogs = (data: any) => {
 			.collection("timeLogs")
 			.where("timeStartCalc", ">=", data.dateStart)
 			.where("timeStartCalc", "<=", data.dateFinish)
-            .orderBy("timeStartCalc")
+			.orderBy("timeStartCalc");
 
 		await query.get().then(async (querySnapshot: any) => {
 			await Promise.all(
@@ -26,7 +26,33 @@ export const getTimeLogs = (data: any) => {
 				})
 			);
 		});
-        console.log(fetchedData)
+		console.log(fetchedData);
 		dispatch(updateAllData(fetchedData));
+	};
+};
+
+export const addNewTimeLog = (data: any) => {
+	return async (dispatch: any, getState: any, { getFirebase }: any): Promise<any> => {
+		const fb = getFirebase();
+		const state = getState();
+
+		const query = fb
+			.firestore()
+			.collection(`users`)
+			.doc(state.fb.auth.uid)
+			.collection("timeLogs")
+			.doc();
+		await query
+			.set(data)
+			.then(() => {
+				notification["success"]({
+					message: `Time Log Saved`,
+					description: "Data added successfully",
+				});
+				
+			})
+			.catch(() => {
+				console.log("Document not successfully written!");
+			});
 	};
 };
