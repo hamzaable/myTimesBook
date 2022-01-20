@@ -29,8 +29,7 @@ interface PROPS {
 	// setSelectedTaskTypeDetail
 }
 function TimeLogForm(props: any) {
-	const fb = getFirebase();
-	const user = useSelector((state: any) => state.fb.auth);
+	const parentsList = useSelector((state: any) => state.settings.parentsList);
 	const dispatch = useDispatch();
 	const [form] = Form.useForm();
 
@@ -60,7 +59,6 @@ function TimeLogForm(props: any) {
 			description: props.description,
 			tags: props.tags,
 			date: props.selectedDate,
-			reportTo : props.selectedReportTo,
 		});
 	}, [
 		props.selectedTaskType,
@@ -72,8 +70,15 @@ function TimeLogForm(props: any) {
 		props.description,
 		props.tags,
 		props.selectedDate,
-		props.selectedReportTo,
 	]);
+
+	useEffect(() => {
+		form.setFieldsValue({
+			reportTo: parentsList.find((val: any) => {
+				return val.value === props.selectedReportTo;
+			})?.label,
+		});
+	}, [form, props.selectedReportTo, parentsList]);
 
 	const addNewTaskTypeHandler = async () => {
 		if (!newTaskType) {
@@ -113,22 +118,6 @@ function TimeLogForm(props: any) {
 		});
 
 		setIsFetching(false);
-	};
-
-	const reportToOnclick = async (e: any) => {
-		setIsFetching(true);
-		const results: { label: string; value: string }[] = await dispatch(
-			getParentsList()
-		);
-		const uniqueResults: { label: string; value: string }[] = [
-			...new Set(results),
-		];
-		if (uniqueResults.length !== 0) {
-			setReportToOptions(uniqueResults);
-		} else {
-			setReportToOptions([{ label: "", value: "" }]);
-		}
-		return;
 	};
 
 	return (
@@ -256,7 +245,6 @@ function TimeLogForm(props: any) {
 								<Form.Item label="Report to" name="reportTo">
 									<Select
 										value={props.selectedReportTo}
-										onClick={reportToOnclick}
 										notFoundContent={
 											isFetching ? (
 												<Loading size={12} />
@@ -268,7 +256,7 @@ function TimeLogForm(props: any) {
 											props.setSelectedReportTo(e);
 										}}
 									>
-										{reportToOptions.map((data: any) => {
+										{parentsList.map((data: any) => {
 											return (
 												<Select.Option
 													key={data.value}

@@ -7,6 +7,7 @@ import HomeChart from "../../components/compounds/homeChart";
 import HomeVisTimeline from "../../components/compounds/homeVisTimeline";
 import LogCardMaker from "../../components/compounds/logCardMaker";
 import TimeLog from "../../components/compounds/timelog";
+import { getParentsList } from "../../redux/settings/settingsActions";
 import { getTimeLogs } from "../../redux/timeLog/timeLogActions";
 
 function Dashboard(props: any) {
@@ -16,6 +17,7 @@ function Dashboard(props: any) {
 
 	useEffect(() => {
 		fetchTimeLogs();
+        fetchParents();
 	}, [activeDate]);
 
 	const fetchTimeLogs = () => {
@@ -26,6 +28,10 @@ function Dashboard(props: any) {
 			})
 		);
 	};
+
+    const fetchParents = ()=>{
+        dispatch(getParentsList())
+    }
 	return (
 		<div>
 			<Space

@@ -11,11 +11,9 @@ import {
 	getLogTypeDetails,
 	getTimeLogModal,
 } from "../../redux/settings/settingsActions";
-import { settingsActions } from "../../redux/settings/settingsReducer";
 import { getOneTimeLog } from "../../redux/timeLog/timeLogActions";
 import { LOG } from "../../types/types";
 import Loading from "./loading";
-import TimeLog from "./timelog";
 import TimeLogForm from "./timeLogForm";
 
 function TimeLogModal(props: any) {
@@ -65,8 +63,8 @@ function TimeLogModal(props: any) {
 	const handleOk = () => {
 		setConfirmLoading(true);
 		setTimeout(() => {
-			props.setModalVisible(false);
-			setConfirmLoading(false);
+            setConfirmLoading(false);
+			dispatch(getTimeLogModal(false, ""))
 		}, 2000);
 	};
 
@@ -80,6 +78,7 @@ function TimeLogModal(props: any) {
 			setSelectedFinishTime("");
 			setSelectedReportTo("");
 			setSelectedDate("");
+            setConfirmLoading(false);
 		});
 	};
 

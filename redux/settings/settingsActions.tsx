@@ -12,6 +12,7 @@ const {
 	addLogType,
 	addLogTypeDetail,
 	setTimeLogModal,
+	setParentsList,
 } = settingsActions;
 
 export const getUserSettings = (data: any) => {
@@ -279,11 +280,7 @@ export const getTimeLogModal = (visibility: boolean, id: string) => {
 };
 
 export const getParentsList = () => {
-	return async (
-		dispatch: any,
-		getState: any,
-		{ getFirebase }
-	) => {
+	return async (dispatch: any, getState: any, { getFirebase }) => {
 		const fb = getFirebase();
 		const state = getState();
 		const results: { label: string; value: string }[] = [];
@@ -306,7 +303,12 @@ export const getParentsList = () => {
 			.catch((error: any) => {
 				console.log("Error getting documents: ", error);
 			});
-
+		if (results.length !== 0) {
+			dispatch(setParentsList(results));
+		} else {
+			dispatch(setParentsList([{ label: "", value: "" }]));
+		}
+		dispatch(setParentsList(results));
 		return results;
 	};
 };

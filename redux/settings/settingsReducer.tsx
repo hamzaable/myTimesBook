@@ -21,6 +21,7 @@ const initialState = {
 	logTypesData: [],
 	logTypeDetailsData: [],
 	isTimeLogModalVisible: { isVisible: false, openID: "id" },
+    parentsList:[]
 };
 
 const settingsSlice = createSlice({
@@ -73,6 +74,9 @@ const settingsSlice = createSlice({
 		setTimeLogModal(state, action) {
 			state.isTimeLogModalVisible = action.payload;
 		},
+        setParentsList(state,action){
+            state.parentsList = action.payload
+        }
 	},
 });
 

@@ -399,6 +399,7 @@ const TimeLog: React.FC<TIMELOG> = (props: any) => {
 											)
 										}
 										onChange={(e: any) => {
+                                            console.log(e);
 											setSelectedReportTo(e);
 										}}
 									>
