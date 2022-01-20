@@ -11,23 +11,17 @@ import {
 } from "antd";
 import { MaskedInput } from "antd-mask-input";
 import moment from "moment";
-import React, { useEffect, useRef, useState } from "react";
-import { getFirebase } from "react-redux-firebase";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import SelectWithAddnew from "../elements/selectWithAddnew";
 import {
 	addNewTaskType,
 	addNewTaskTypeDetail,
 	getLogTypes,
-	getParentsList,
 } from "../../redux/settings/settingsActions";
-import { timeDifferencer, titleCase } from "../../Functions/Converter";
+import {  titleCase } from "../../Functions/Converter";
 import Loading from "./loading";
 
-interface PROPS {
-	// setSelectedTaskType
-	// setSelectedTaskTypeDetail
-}
 function TimeLogForm(props: any) {
 	const parentsList = useSelector((state: any) => state.settings.parentsList);
 	const dispatch = useDispatch();
@@ -84,7 +78,6 @@ function TimeLogForm(props: any) {
 		if (!newTaskType) {
 			return;
 		}
-
 		dispatch(addNewTaskType(newTaskType)).then(() => {
 			setNewTaskType("");
 
@@ -209,14 +202,6 @@ function TimeLogForm(props: any) {
 									// label="Task Name"
 									name="description"
 								>
-									{/* <TextEditor
-										placeholder="Task Details"
-										onChange={(e) => {
-  											setDescription(e);
-										}}
-										value={description}
-									/> */}
-
 									<Input.TextArea
 										value={props.description}
 										onChange={(e) => {
@@ -330,16 +315,12 @@ function TimeLogForm(props: any) {
 											"HH:mm"
 										)}
 										onSelect={(value) => {
-											// const timeString =
-											// 	moment(value).format("HH:mm");
 											props.setSelectedFinishTime(value);
 											form.setFieldsValue({
 												timeFinish: value,
 											});
 										}}
 										onChange={(value) => {
-											// const timeString =
-											// 	moment(value).format("HH:mm");
 											props.setSelectedFinishTime(value);
 										}}
 									/>

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
 	firestampToMoment,
+	momentToFirestamp,
 	timeDifferencer,
 	timeExpander,
 } from "../../Functions/Converter";
@@ -11,7 +12,11 @@ import {
 	getLogTypeDetails,
 	getTimeLogModal,
 } from "../../redux/settings/settingsActions";
-import { getOneTimeLog } from "../../redux/timeLog/timeLogActions";
+import {
+	getOneTimeLog,
+	getTimeLogs,
+	updateOneTimeLog,
+} from "../../redux/timeLog/timeLogActions";
 import { LOG } from "../../types/types";
 import Loading from "./loading";
 import TimeLogForm from "./timeLogForm";
@@ -44,7 +49,6 @@ function TimeLogModal(props: any) {
 		if (modalData.isVisible === true) {
 			// get data first
 			dispatch(getOneTimeLog(modalData.openID)).then((value: LOG) => {
-				console.log("React.useEffect ~ value", value.description);
 				setSelectedTaskType(value.type);
 				setSelectedTaskTypeDetail(value.typeDetail);
 				setDescription(value.description);
@@ -62,10 +66,76 @@ function TimeLogModal(props: any) {
 
 	const handleOk = () => {
 		setConfirmLoading(true);
-		setTimeout(() => {
+
+		const timeStartCalc = moment(selectedDate);
+		timeStartCalc.hours(moment(selectedStartTime).hour());
+		timeStartCalc.minutes(moment(selectedStartTime).minutes());
+		timeStartCalc.seconds(0);
+
+		const timeFinishCalc = moment(selectedDate);
+		timeFinishCalc.hours(moment(selectedFinishTime).hour());
+		timeFinishCalc.minutes(moment(selectedFinishTime).minutes());
+		timeFinishCalc.seconds(0);
+
+		// if there is duration but no start and end time
+
+		if (selectedDuration && !selectedFinishTime && !selectedStartTime) {
+			timeStartCalc.hours(0);
+			timeStartCalc.minutes(0);
+			timeStartCalc.seconds(0);
+
+			timeFinishCalc.hours(+timeExpander(selectedDuration).hours);
+			timeFinishCalc.minutes(timeExpander(selectedDuration).minutes);
+			timeFinishCalc.seconds(0);
+		}
+
+		// if nothin in time is entered , just add the start time
+		if (!selectedDuration && !selectedFinishTime && !selectedStartTime) {
+			timeStartCalc.hours(moment().hours());
+			timeStartCalc.minutes(moment().minutes());
+			timeStartCalc.seconds(0);
+			setSelectedStartTime(timeStartCalc);
+		}
+
+		const timeStartFormatted = momentToFirestamp(selectedStartTime);
+		const timeFinishFormatted = momentToFirestamp(selectedFinishTime);
+
+		const totalMinutes =
+			timeExpander(selectedDuration).hours * 60 +
+			timeExpander(selectedDuration).minutes;
+
+		const submitter = {
+			logDate: momentToFirestamp(selectedDate),
+			description: description,
+			duration: selectedDuration,
+			reportTo: selectedReportTo,
+			tags: ["a", "b"],
+			timeStart: timeStartFormatted,
+			timeFinish: timeFinishFormatted,
+			timeStartCalc: momentToFirestamp(timeStartCalc),
+			timeFinishCalc: momentToFirestamp(timeFinishCalc),
+			type: selectedTaskType,
+			typeDetail: selectedTaskTypeDetail,
+			durationMinutes: +totalMinutes,
+		};
+		// console.log("handleFormSubmit ~ submitter", submitter);
+
+		dispatch(updateOneTimeLog(modalData.openID, submitter)).then(()=>{
+            dispatch(
+				getTimeLogs({
+					dateStart: new Date(
+						moment(selectedDate).startOf("day").toDate()
+					),
+					dateFinish: new Date(
+						moment(selectedDate).endOf("day").toDate()
+					),
+				})
+			);
             setConfirmLoading(false);
-			dispatch(getTimeLogModal(false, ""))
-		}, 2000);
+            dispatch(getTimeLogModal(false, ""));
+        })
+
+	
 	};
 
 	const handleCancel = () => {
@@ -78,10 +148,9 @@ function TimeLogModal(props: any) {
 			setSelectedFinishTime("");
 			setSelectedReportTo("");
 			setSelectedDate("");
-            setConfirmLoading(false);
+			setConfirmLoading(false);
 		});
 	};
-
 
 	useEffect(() => {
 		if (!isFetching) {

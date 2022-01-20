@@ -83,6 +83,25 @@ export const getOneTimeLog = (id: string) => {
 				console.log("Error getting document:", error);
 			});
 
-		return  await data;
+		return await data;
+	};
+};
+
+export const updateOneTimeLog = (id: string, data: any) => {
+	return async (dispatch: any, getState: any, { getFirebase }: any) => {
+		const fb = getFirebase();
+		const state = getState();
+		fb.firestore()
+			.collection("users")
+			.doc(state.fb.auth.uid)
+			.collection("timeLogs")
+			.doc(id)
+			.update(data)
+			.then(() => {
+				notification["success"]({
+					message: `Log Update`,
+					description: "Data updated successfully",
+				});
+			});
 	};
 };
