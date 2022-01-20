@@ -18,9 +18,7 @@ function OneLogCard({
 }: any) {
 	const dispatch = useDispatch();
 	const timeStartMaker = (logId: string) => {
-		console.log(logId);
 		dispatch(getTimeLogModal(true, logId));
-
 		// return firestampToMoment(startTime).format("DD.MM.YYYY");
 	};
 
@@ -34,6 +32,8 @@ function OneLogCard({
 				padding: "12px",
 				paddingLeft: "24px",
 				paddingRight: "24px",
+				cursor: "pointer",
+                
 			}}
 			onClick={() => timeStartMaker(id)}
 		>

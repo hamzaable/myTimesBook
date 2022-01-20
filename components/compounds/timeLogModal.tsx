@@ -2,11 +2,19 @@ import { Modal } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { timeDifferencer, timeExpander } from "../../Functions/Converter";
+import {
+	firestampToMoment,
+	timeDifferencer,
+	timeExpander,
+} from "../../Functions/Converter";
 import {
 	getLogTypeDetails,
 	getTimeLogModal,
 } from "../../redux/settings/settingsActions";
+import { settingsActions } from "../../redux/settings/settingsReducer";
+import { getOneTimeLog } from "../../redux/timeLog/timeLogActions";
+import { LOG } from "../../types/types";
+import Loading from "./loading";
 import TimeLog from "./timelog";
 import TimeLogForm from "./timeLogForm";
 
@@ -28,11 +36,29 @@ function TimeLogModal(props: any) {
 	const [selectedDuration, setSelectedDuration] = useState<any>();
 
 	const [selectedReportTo, setSelectedReportTo] = useState<any>();
+	const [tags, setTags] = useState<string[] | undefined>();
 	const [description, setDescription] = useState("");
 	const [selectedDate, setSelectedDate] = useState(props.defaultDate);
+	const [isFetching, setIsFetching] = useState(false);
 
 	React.useEffect(() => {
-		console.log("data changed");
+		setIsFetching(true);
+		if (modalData.isVisible === true) {
+			// get data first
+			dispatch(getOneTimeLog(modalData.openID)).then((value: LOG) => {
+				console.log("React.useEffect ~ value", value.description);
+				setSelectedTaskType(value.type);
+				setSelectedTaskTypeDetail(value.typeDetail);
+				setDescription(value.description);
+				setSelectedDuration(value.duration);
+				setTags(value.tags);
+				setSelectedDate(firestampToMoment(value.logDate));
+				setSelectedStartTime(firestampToMoment(value.timeFinish));
+				setSelectedFinishTime(firestampToMoment(value.timeStart));
+				setSelectedReportTo(value.reportTo);
+				setIsFetching(false);
+			});
+		}
 	}, [modalData]);
 	const [confirmLoading, setConfirmLoading] = React.useState(false);
 
@@ -45,14 +71,66 @@ function TimeLogModal(props: any) {
 	};
 
 	const handleCancel = () => {
-		console.log("Clicked cancel button");
-		dispatch(getTimeLogModal(false, ""));
+		dispatch(getTimeLogModal(false, "")).then(() => {
+			setSelectedTaskType("");
+			setSelectedTaskTypeDetail("");
+			setSelectedDuration("");
+			setDescription("");
+			setSelectedStartTime("");
+			setSelectedFinishTime("");
+			setSelectedReportTo("");
+			setSelectedDate("");
+		});
 	};
 
-	const [activeDate, setActiveDate] = React.useState<moment.Moment>(moment());
 
+	useEffect(() => {
+		if (!isFetching) {
+			// if finish time change with start time present
+			if (selectedStartTime && selectedFinishTime) {
+				const calcDuration = timeDifferencer(
+					moment(selectedStartTime).hours(),
+					moment(selectedStartTime).minutes(),
+					moment(selectedFinishTime).hours(),
+					moment(selectedFinishTime).minutes()
+				);
+				setSelectedDuration(calcDuration);
 
+				//  if finish time is null remove duration
 
+				if (
+					selectedFinishTime === "Invalid date" ||
+					selectedStartTime === "Invalid date"
+				) {
+					setSelectedDuration(null);
+					// form.setFieldsValue({
+					// 	duration: null,
+					// });
+				}
+			}
+		}
+	}, [selectedStartTime, selectedFinishTime]);
+
+	useEffect(() => {
+		if (selectedStartTime && selectedFinishTime) {
+			if (selectedStartTime) {
+				const { hours: durationHour, minutes: durationhMinute } =
+					timeExpander(selectedDuration);
+
+				const finishTime = moment(selectedStartTime);
+
+				finishTime.date(selectedDate.date());
+				finishTime.month(selectedDate.month());
+				finishTime.year(selectedDate.year());
+
+				finishTime
+					.add(durationHour, "hours")
+					.add(durationhMinute, "minutes");
+
+				setSelectedFinishTime(moment(finishTime));
+			}
+		}
+	}, [selectedDuration]);
 
 	useEffect(() => {
 		if (selectedTaskType && selectedTaskType !== "") {
@@ -79,37 +157,49 @@ function TimeLogModal(props: any) {
 				width={800}
 				style={{ top: "50px" }}
 			>
-				<TimeLogForm
-					selectedTaskType={selectedTaskType}
-					setSelectedTaskType={(e: any) => {
-						setSelectedTaskType(e);
-						setSelectedTaskTypeDetail("");
-					}}
-					setSelectedTaskTypeDetail={(e: any) => {
-						setSelectedTaskTypeDetail(e);
-					}}
-					selectedTaskTypeDetail={selectedTaskTypeDetail}
-					description={description}
-					setDescription={(e: any) => {
-						setDescription(e);
-					}}
-					setSelectedDate={(e: any) => {
-						setSelectedDate(e);
-					}}
-					selectedDate={selectedDate}
-					setSelectedStartTime={(e: any) => {
-						setSelectedStartTime(e);
-					}}
-					selectedStartTime={selectedStartTime}
-					setSelectedFinishTime={(e: any) => {
-						setSelectedFinishTime(e);
-					}}
-					selectedFinishTime={selectedFinishTime}
-					selectedDuration={selectedDuration}
-					setSelectedDuration={(e: any) => {
-						setSelectedDuration(e);
-					}}
-				/>
+				{isFetching ? (
+					<Loading />
+				) : (
+					<TimeLogForm
+						selectedTaskType={selectedTaskType}
+						setSelectedTaskType={(e: any) => {
+							setSelectedTaskType(e);
+							setSelectedTaskTypeDetail("");
+						}}
+						setSelectedTaskTypeDetail={(e: any) => {
+							setSelectedTaskTypeDetail(e);
+						}}
+						selectedTaskTypeDetail={selectedTaskTypeDetail}
+						description={description}
+						setDescription={(e: any) => {
+							setDescription(e);
+						}}
+						setSelectedDate={(e: any) => {
+							setSelectedDate(e);
+						}}
+						selectedDate={selectedDate}
+						setSelectedStartTime={(e: any) => {
+							setSelectedStartTime(e);
+						}}
+						selectedStartTime={selectedStartTime}
+						setSelectedFinishTime={(e: any) => {
+							setSelectedFinishTime(e);
+						}}
+						selectedFinishTime={selectedFinishTime}
+						selectedDuration={selectedDuration}
+						setSelectedDuration={(e: any) => {
+							setSelectedDuration(e);
+						}}
+						selectedReportTo={selectedReportTo}
+						setSelectedReportTo={(e: any) => {
+							setSelectedReportTo(e);
+						}}
+						tags={tags}
+						setTags={(e: any) => {
+							setTags(e);
+						}}
+					/>
+				)}
 			</Modal>
 		</>
 	);

@@ -9,7 +9,9 @@ const Loading: React.FC<{ size?: number }> = (props) => {
 	const antIcon = <LoadingOutlined style={sizeStyle} spin />;
 	return (
 		<>
-			<Spin indicator={antIcon} />
+			<div style={{ display: "flex", justifyContent: "center" }}>
+				<Spin indicator={antIcon} />
+			</div>
 		</>
 	);
 };

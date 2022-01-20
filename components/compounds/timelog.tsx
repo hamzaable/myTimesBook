@@ -36,8 +36,6 @@ import { addNewTimeLog, getTimeLogs } from "../../redux/timeLog/timeLogActions";
 
 interface TIMELOG {
 	defaultDate: moment.Moment;
-    isUpdate:boolean;
-    updateData : any
 }
 const TimeLog: React.FC<TIMELOG> = (props: any) => {
 	const fb = getFirebase();
@@ -221,7 +219,7 @@ const TimeLog: React.FC<TIMELOG> = (props: any) => {
 			timeStartCalc.hours(moment().hours());
 			timeStartCalc.minutes(moment().minutes());
 			timeStartCalc.seconds(0);
-            setSelectedStartTime(timeStartCalc)
+			setSelectedStartTime(timeStartCalc);
 		}
 
 		const timeStartFormatted = momentToFirestamp(selectedStartTime);
@@ -236,7 +234,7 @@ const TimeLog: React.FC<TIMELOG> = (props: any) => {
 			description: description,
 			duration: selectedDuration,
 			reportTo: selectedReportTo,
-			tags: ["a","b"],
+			tags: ["a", "b"],
 			timeStart: timeStartFormatted,
 			timeFinish: timeFinishFormatted,
 			timeStartCalc: momentToFirestamp(timeStartCalc),

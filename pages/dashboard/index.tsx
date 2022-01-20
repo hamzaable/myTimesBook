@@ -52,11 +52,7 @@ function Dashboard(props: any) {
 					<HomeVisTimeline defaultDate={activeDate} />
 				</div>
 
-				<TimeLog
-					defaultDate={activeDate}
-					isUpdate={false}
-					updateData={{}}
-				/>
+				<TimeLog defaultDate={activeDate} />
 				<LogCardMaker />
 			</Space>
 		</div>

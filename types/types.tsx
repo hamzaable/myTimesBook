@@ -11,4 +11,5 @@ export interface LOG {
     tags: string[];
     description: string;
     durationMinutes: number;
+    logDate:{ seconds: number; nanoseconds: number };
 }
