@@ -36,7 +36,7 @@ function Dashboard(props: any) {
 				{/* <Button onClick={fetchTimeLogs}>Fetch TimeLogs</Button> */}
 				<DateRow
 					activeDate={activeDate}
-					setActiveDate={(e:moment.Moment) => {
+					setActiveDate={(e: moment.Moment) => {
 						setActiveDate(e);
 					}}
 				/>
@@ -45,16 +45,19 @@ function Dashboard(props: any) {
 					style={{
 						// backgroundColor: "rgb(249 250 251)",
 						// boxShadow: "rgba(0, 0, 0, 0.1) 0px 0px 20px",
-                        borderRadius:'10px',
-                        border: '1px solid lightgrey',
+						borderRadius: "10px",
+						border: "1px solid lightgrey",
 					}}
 				>
-					<HomeVisTimeline defaultDate={activeDate}/>
+					<HomeVisTimeline defaultDate={activeDate} />
 				</div>
 
-				<TimeLog defaultDate={activeDate} />
+				<TimeLog
+					defaultDate={activeDate}
+					isUpdate={false}
+					updateData={{}}
+				/>
 				<LogCardMaker />
-				<HomeChart />
 			</Space>
 		</div>
 	);

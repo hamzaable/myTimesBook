@@ -7,6 +7,7 @@ function SelectWithAddnew(props: any) {
 	return (
 		<>
 			<Select
+
 				dropdownRender={(menu) => (
 					<div>
 						{menu}
@@ -30,7 +31,10 @@ function SelectWithAddnew(props: any) {
 									display: "block",
 									cursor: "pointer",
 								}}
-								onClick={props.onAddNew}
+								onClick={(e) => {
+									blur();
+									props.onAddNew(e);
+								}}
 							>
 								<PlusOutlined /> Add
 							</a>

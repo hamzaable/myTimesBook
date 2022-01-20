@@ -117,7 +117,6 @@ export const getLogTypes = () => {
 
 export const getLogTypeDetails = (type: string) => {
 	return async (dispatch: any, getState: any, { getFirebase }: any) => {
-		console.log("getLogTypeDetails Ran");
 		const fb = getFirebase();
 		const state = getState();
 		const collectionRef = fb
