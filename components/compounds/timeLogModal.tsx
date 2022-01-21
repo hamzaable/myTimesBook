@@ -107,9 +107,9 @@ function TimeLogModal(props: any) {
 		const submitter = {
 			logDate: momentToFirestamp(selectedDate),
 			description: description,
-			duration: selectedDuration,
+			duration: selectedDuration || "",
 			reportTo: selectedReportTo,
-			tags: ["a", "b"],
+			tags: tags,
 			timeStart: timeStartFormatted,
 			timeFinish: timeFinishFormatted,
 			timeStartCalc: momentToFirestamp(timeStartCalc),

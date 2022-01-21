@@ -41,6 +41,7 @@ function MainLayout(props: any) {
 							borderTopLeftRadius: "10px",
 							borderBottomLeftRadius: "10px",
                             backgroundColor: "#f2f6f8",
+                            width:"auto"
 						}}
 					>
 						<Content

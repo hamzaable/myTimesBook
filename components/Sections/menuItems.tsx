@@ -32,7 +32,7 @@ function MenuItems() {
 					<Link href="/dashboard">Dashboard</Link>
 				</Menu.Item>
 				<Menu.Item key="2" icon={<FieldTimeOutlined />}>
-					Timesheet
+                <Link href="/timesheet">Timesheet</Link>
 				</Menu.Item>
 				<Menu.Item key="3" icon={<PicLeftOutlined />}>
 					<Link href="/reports">Reports</Link>

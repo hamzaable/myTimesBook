@@ -1,7 +1,7 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { LOG } from "../../types/types";
-import VsTimeLine from "../elements/vsTimeLine";
+import VsTimeLine from "../../components/elements/vsTimeLine";
 import { useSelector } from "react-redux";
 import { firestampToMoment } from "../../Functions/Converter";
 

@@ -70,3 +70,13 @@ a {
 .vis-panel.vis-center {
     border-bottom: 0px!important;
 }
+.rdrInputRanges{
+    display: none;
+}
+
+.rdrDefinedRangesWrapper {
+    font-size: 12px;
+    width: 140px!important;
+    border-right: solid 1px #eff2f7;
+    background: #fff;
+}

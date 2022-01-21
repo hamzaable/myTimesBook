@@ -232,7 +232,7 @@ const TimeLog: React.FC<TIMELOG> = (props: any) => {
 		const submitter = {
 			logDate: momentToFirestamp(selectedDate),
 			description: description,
-			duration: selectedDuration,
+			duration: selectedDuration || "",
 			reportTo: selectedReportTo,
 			tags: ["a", "b"],
 			timeStart: timeStartFormatted,
@@ -243,7 +243,7 @@ const TimeLog: React.FC<TIMELOG> = (props: any) => {
 			typeDetail: selectedTaskTypeDetail,
 			durationMinutes: +totalMinutes,
 		};
-		console.log("handleFormSubmit ~ submitter", submitter);
+		console.table("handleFormSubmit ~ submitter", submitter);
 
 		dispatch(addNewTimeLog(submitter)).then(() => {
 			form.resetFields();

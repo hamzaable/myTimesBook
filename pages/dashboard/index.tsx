@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import DateRow from "../../components/compounds/dateRow";
 import HomeChart from "../../components/compounds/homeChart";
-import HomeVisTimeline from "../../components/compounds/homeVisTimeline";
+import HomeVisTimeline from "./homeVisTimeline";
 import LogCardMaker from "../../components/compounds/logCardMaker";
 import TimeLog from "../../components/compounds/timelog";
 import { getParentsList } from "../../redux/settings/settingsActions";
