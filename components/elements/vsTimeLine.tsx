@@ -55,8 +55,8 @@ function VsTimeLine({
             width: "100%",
             height: "100px",
             zoomable: true,
-            zoomMin: 21600000,
-            zoomMax: 21600000,
+            // zoomMin: 21600000,
+            // zoomMax: 21600000,
             showCurrentTime: true,
             showMajorLabels: false,
         };

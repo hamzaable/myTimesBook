@@ -80,3 +80,16 @@ a {
     border-right: solid 1px #eff2f7;
     background: #fff;
 }
+
+.daterangepicker::before {
+    top: -15px;
+    left: 120px;
+    border-right: 15px solid transparent;
+    border-left: 15px solid transparent;
+    border-bottom: 15px solid white;
+    position: absolute;
+    display: inline-block;
+    border-bottom-color: white;
+    content: '';
+
+}
