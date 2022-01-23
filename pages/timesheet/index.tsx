@@ -1,9 +1,8 @@
-import { Button, Divider, Row, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import moment from "moment";
-
-import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 import DateRangeSelector from "../../components/elements/dateRangeSelector";
+import { Typography, Divider } from "antd";
+import DataTable from "../../components/elements/dataTable";
 
 function Timesheet() {
 	const [dateRange, setDateRange] = useState([
@@ -22,7 +21,13 @@ function Timesheet() {
 			{/* Month / Date Range */}
 			{/* Right Arrow */}
 
-			<div style={{ marginTop: "0px", marginBottom:"20px", alignItems: "center" }}>
+			<div
+				style={{
+					marginTop: "0px",
+					marginBottom: "20px",
+					alignItems: "center",
+				}}
+			>
 				<DateRangeSelector
 					dateRange={dateRange}
 					setDateRange={(e) => {
@@ -30,6 +35,7 @@ function Timesheet() {
 					}}
 				/>
 			</div>
+			<DataTable />
 			<Typography.Title>My Name is Lagan</Typography.Title>
 		</div>
 	);
