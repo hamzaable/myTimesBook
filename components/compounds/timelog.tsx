@@ -58,6 +58,7 @@ const TimeLog: React.FC<TIMELOG> = (props: any) => {
 
 	const [newTaskType, setNewTaskType] = useState<string>("");
 	const [selectedTaskType, setSelectedTaskType] = useState<string>("");
+	const [tags, setTags] = useState<string[] | undefined>();
 
 	const [newTaskTypeDetail, setNewTaskTypeDetail] = useState<string>("");
 	const [selectedTaskTypeDetail, setSelectedTaskTypeDetail] =
@@ -234,7 +235,7 @@ const TimeLog: React.FC<TIMELOG> = (props: any) => {
 			description: description,
 			duration: selectedDuration || "",
 			reportTo: selectedReportTo,
-			tags: ["a", "b"],
+			tags: tags,
 			timeStart: timeStartFormatted,
 			timeFinish: timeFinishFormatted,
 			timeStartCalc: momentToFirestamp(timeStartCalc),
@@ -381,6 +382,10 @@ const TimeLog: React.FC<TIMELOG> = (props: any) => {
 										mode="tags"
 										style={{ width: "100%" }}
 										placeholder="Tags"
+                                        value={tags}
+										onChange={(e) => {
+											setTags(e);
+										}}
 										// onChange={handleChange}
 									>
 										{/* <Option key={1}>{1}</Option> */}
