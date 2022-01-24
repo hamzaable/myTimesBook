@@ -49,7 +49,9 @@ const TimeLog: React.FC<TIMELOG> = (props: any) => {
 	const taskTypeOptions = useSelector(
 		(state: any) => state.settings.logTypesData
 	);
-
+    const timeSteps = useSelector(
+		(state: any) => state.settings.userData.timeSteps
+	);
 	const taskTypeDetailOptions = useSelector(
 		(state: any) => state.settings.logTypeDetailsData
 	);
@@ -442,7 +444,6 @@ const TimeLog: React.FC<TIMELOG> = (props: any) => {
 								<Form.Item name="timeStart">
 									<TimePicker
 										placeholder="Start Time"
-										minuteStep={5}
 										// defaultValue={moment("12:08", "HH:mm")}
 										format={"HH:mm"}
 										style={{ minWidth: "100%" }}
@@ -464,6 +465,7 @@ const TimeLog: React.FC<TIMELOG> = (props: any) => {
 											// 	moment(value).format("HH:mm");
 											setSelectedStartTime(value);
 										}}
+                                        minuteStep={timeSteps}
 									/>
 								</Form.Item>
 							</Col>
@@ -471,7 +473,7 @@ const TimeLog: React.FC<TIMELOG> = (props: any) => {
 								<Form.Item name="timeFinish">
 									<TimePicker
 										placeholder="Finish Time"
-										minuteStep={5}
+										minuteStep={timeSteps}
 										// defaultValue={moment("12:08", "HH:mm")}
 										format={"HH:mm"}
 										style={{ minWidth: "100%" }}
