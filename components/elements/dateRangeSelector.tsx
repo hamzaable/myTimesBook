@@ -81,6 +81,7 @@ function DateRangeSelector({ dateRange, setDateRange }: any) {
 			<div
 				style={{
 					position: "relative",
+                    zIndex:"9"
 				}}
 			>
 				<div

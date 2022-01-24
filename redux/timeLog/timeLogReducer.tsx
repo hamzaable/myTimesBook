@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
 	dashboardTimeLogData: {},
+    filterTimeLogData:[]
 };
 
 const timeLogSlice = createSlice({
@@ -10,6 +11,9 @@ const timeLogSlice = createSlice({
 	reducers: {
 		updateAllData(state, action: any) {
 			state.dashboardTimeLogData = action.payload;
+		},
+        updateFilteredAllData(state, action: any) {
+			state.filterTimeLogData = action.payload;
 		},
 		
 	},

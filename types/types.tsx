@@ -13,3 +13,9 @@ export interface LOG {
     durationMinutes: number;
     logDate:{ seconds: number; nanoseconds: number };
 }
+
+export interface DATERANGE  {
+    startDate: Date;
+    endDate: Date;
+    key: string;
+}

@@ -3,15 +3,37 @@ import moment from "moment";
 import DateRangeSelector from "../../components/elements/dateRangeSelector";
 import { Typography, Divider } from "antd";
 import DataTable from "../../components/elements/dataTable";
+import { useDispatch, useSelector } from "react-redux";
+import { getFilteredTimeLogs } from "../../redux/timeLog/timeLogActions";
+import { DATERANGE, LOG } from "../../types/types";
 
 function Timesheet() {
-	const [dateRange, setDateRange] = useState([
+	const dispatch: any = useDispatch();
+	const logData: LOG[] = useSelector(
+		(state: any) => state.timeLog.filterTimeLogData
+	);
+
+	const [dateRange, setDateRange] = useState<DATERANGE[]>([
 		{
 			startDate: new Date(moment().startOf("month").format()),
 			endDate: new Date(moment().endOf("month").format()),
 			key: "selection",
 		},
 	]);
+
+	useEffect(() => {
+		//fetch data from firebase
+		dispatch(
+			getFilteredTimeLogs({
+				dateStart: dateRange[0].startDate,
+				dateFinish: dateRange[0].endDate,
+			})
+		);
+	}, [dateRange]);
+
+	useEffect(() => {
+		console.table(logData);
+	}, [logData]);
 
 	return (
 		<div>
