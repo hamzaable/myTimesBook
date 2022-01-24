@@ -48,11 +48,30 @@ export const timeExpander = (value: any) => {
 };
 
 export const titleCase = (str: string) => {
-    return str
-        .split(" ")
-        .map(
-            (item) =>
-                item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()
-        )
-        .join(" ");
+	return str
+		.split(" ")
+		.map(
+			(item) => item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()
+		)
+		.join(" ");
+};
+
+export const minutesToDuration = (minutes: number) => {
+	const temp = makeTimeArray(minutes / 60);
+
+	return (
+		temp[0].toString().padStart(2, "0") +
+		":" +
+		temp[1].toString().padStart(2, "0")
+	);
+};
+
+export const minutesToDurationDetail = (minutes: number) => {
+	const temp = makeTimeArray(minutes / 60);
+
+	return (
+		temp[0].toString().padStart(2, "0") +
+		" hours " +
+		temp[1].toString().padStart(2, "0") + " mins"
+	);
 };

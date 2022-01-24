@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment";
 import DateRangeSelector from "../../components/elements/dateRangeSelector";
-import { Typography, Divider, Tag, Space } from "antd";
+import { Typography, Divider, Tag, Space, Button } from "antd";
 import DataTable from "../../components/elements/dataTable";
 import { useDispatch, useSelector } from "react-redux";
 import { getFilteredTimeLogs } from "../../redux/timeLog/timeLogActions";
 import { DATERANGE, LOG } from "../../types/types";
 import { firestampToMoment } from "../../Functions/Converter";
 import { getTimeLogModal } from "../../redux/settings/settingsActions";
+import { CSVLink } from "react-csv";
 
 function Timesheet() {
 	const dispatch: any = useDispatch();
@@ -49,6 +50,21 @@ function Timesheet() {
 			Minutes: log.durationMinutes,
 		};
 	});
+
+	const csvExport = logData.map((log) => {
+		return {
+			Project: log.type,
+			ProjectDetail: log.typeDetail,
+			Description: log.description.slice(0, 150),
+			Tags: log.tags,
+			Date: log.logDate ? firestampToMoment(log.logDate).format("DD.MM.YYYY") : "",
+			["Start Time"]: firestampToMoment(log.timeStart).format("hh:mm"),
+			["Finish Time"]: firestampToMoment(log.timeFinish).format("hh:mm"),
+			Duration: log.duration,
+			["Total Minutes"]: log.durationMinutes,
+		};
+	});
+
 	const uniqueProjects = () => {
 		return [
 			...new Set(
@@ -59,10 +75,9 @@ function Timesheet() {
 		].map((data) => {
 			return { text: data, value: data };
 		});
-		
 	};
 
-    const uniqueProjectsDetails = () => {
+	const uniqueProjectsDetails = () => {
 		return [
 			...new Set(
 				makeupLogData.map((data) => {
@@ -72,7 +87,6 @@ function Timesheet() {
 		].map((data) => {
 			return { text: data, value: data };
 		});
-		
 	};
 
 	const columns = [
@@ -146,21 +160,44 @@ function Timesheet() {
 		<div>
 			{/* <Typography.Title>Timesheet</Typography.Title> */}
 			{/* <Divider style={{ marginTop: "0" }} /> */}
-
-			<div
-				style={{
-					marginTop: "0px",
-					marginBottom: "20px",
-					alignItems: "center",
-				}}
-			>
-				<DateRangeSelector
-					dateRange={dateRange}
-					setDateRange={(e) => {
-						setDateRange([e.selection]);
+			<div style={{ display: "flex", justifyContent: "space-between" }}>
+				<div
+					style={{
+						marginTop: "0px",
+						marginBottom: "20px",
+						alignItems: "center",
 					}}
-				/>
+				>
+					<DateRangeSelector
+						dateRange={dateRange}
+						setDateRange={(e) => {
+							setDateRange([e.selection]);
+						}}
+					/>
+				</div>
+
+				<div>
+					<Button>
+						<CSVLink
+							data={csvExport}
+							filename={
+								"timeLog-" +
+								moment(dateRange[0].startDate).format(
+									"DD-MM-YYYY"
+								) +
+								"-" +
+								moment(dateRange[0].endDate).format(
+									"DD-MM-YYYY"
+								) +
+								".csv"
+							}
+						>
+							Download
+						</CSVLink>
+					</Button>
+				</div>
 			</div>
+
 			<DataTable logData={makeupLogData} columns={columns} />
 		</div>
 	);

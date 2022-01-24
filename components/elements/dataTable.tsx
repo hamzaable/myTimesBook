@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "antd";
+import { minutesToDuration, minutesToDurationDetail } from "../../Functions/Converter";
 function DataTable({ logData, columns }: any) {
-	const [pagination, setPagination] = useState({
-		current: 1,
-		pageSize: 10,
-	});
-
 	const [data, setData] = useState(logData);
 
 	useEffect(() => {
@@ -15,7 +11,7 @@ function DataTable({ logData, columns }: any) {
 	const handleTableChange = (pagination, filters, sorter) => {
 		// console.log("handleTableChange ~ filters", filters);
 		// console.log('handleTableChange ~ pagination', pagination)
-        let dataLoop = [...logData]
+		let dataLoop = [...logData];
 		let isFiltered = false;
 		for (let prop in filters) {
 			const selected = filters[prop];
@@ -25,18 +21,17 @@ function DataTable({ logData, columns }: any) {
 				for (let i = 0; i < selected.length; i++) {
 					const selectedValue = selected[i];
 					const newData = dataLoop.filter((item: any) => {
-                        return item[prop] == selectedValue;
+						return item[prop] == selectedValue;
 					});
 					if (newData) {
-                        result.push(...newData);
-                       
+						result.push(...newData);
 					}
 				}
 				if (result.length === 0) {
-                    dataLoop = result
-                    setData([]);
+					dataLoop = result;
+					setData([]);
 				} else {
-                    dataLoop = result
+					dataLoop = result;
 					setData(result);
 				}
 			}
@@ -52,9 +47,34 @@ function DataTable({ logData, columns }: any) {
 				columns={columns}
 				rowKey={(record) => record.key}
 				dataSource={data}
-				// pagination={pagination}
+				pagination={{
+					pageSize: 7,
+				}}
 				// loading={loading}
 				onChange={handleTableChange}
+				summary={(pageData) => {
+					let totalMinutes = 0;
+					pageData.forEach(({ Minutes }) => {
+						totalMinutes += Minutes;
+					});
+
+					return (
+						<>
+							<Table.Summary.Row style={{backgroundColor:'#fafafa',fontWeight:"600"}}>
+                            <Table.Summary.Cell
+									index={1} colSpan={5}
+								></Table.Summary.Cell>
+								<Table.Summary.Cell index={1}>
+									Total
+								</Table.Summary.Cell>
+								
+								<Table.Summary.Cell index={5} colSpan={2}>
+									{minutesToDurationDetail(totalMinutes)}
+								</Table.Summary.Cell>
+							</Table.Summary.Row>
+						</>
+					);
+				}}
 			/>
 		</div>
 	);
